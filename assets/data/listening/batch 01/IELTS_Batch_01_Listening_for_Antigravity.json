@@ -1,0 +1,258 @@
+{
+  "id": "01",
+  "title": "Batch 01",
+  "audioUrl": "",
+  "listeningAnswerKeys": {
+    "1": "choose",
+    "2": "private",
+    "3": [
+      "20",
+      "twenty percent"
+    ],
+    "4": "healthy",
+    "5": "bones",
+    "6": "lecture",
+    "7": "Arretsa",
+    "8": "vegetarian",
+    "9": "market",
+    "10": "knife",
+    "11": "B",
+    "12": "C",
+    "13": "B",
+    "14": "E",
+    "15": "D",
+    "16": "B",
+    "17": "G",
+    "18": "C",
+    "19": "H",
+    "20": "I",
+    "21": "A",
+    "22": "C",
+    "23": "B",
+    "24": "C",
+    "25": "B",
+    "26": "G",
+    "27": "C",
+    "28": "H",
+    "29": "A",
+    "30": "E",
+    "31": "crow",
+    "32": "cliffs",
+    "33": "speed",
+    "34": [
+      "brain",
+      "brains"
+    ],
+    "35": "food",
+    "36": [
+      "behaviour",
+      "behaviors",
+      "behavior",
+      "behaviours"
+    ],
+    "37": "new",
+    "38": "stress",
+    "39": [
+      "tail",
+      "tails"
+    ],
+    "40": "permanent"
+  },
+  "readingAnswerKeys": null,
+  "listeningSections": [
+    {
+      "sectionNumber": 1,
+      "title": "Section 1 (Questions 1-10) — Cookery Classes",
+      "instruction": "Complete the table below. Write ONE WORD AND/OR A NUMBER for each answer.",
+      "questions": [
+        {
+          "number": 1,
+          "prompt": "The Food Studio: how to ______ and cook with seasonal products."
+        },
+        {
+          "number": 2,
+          "prompt": "The Food Studio: also offers ______ classes."
+        },
+        {
+          "number": 3,
+          "prompt": "The Food Studio: clients who return get a ______ discount."
+        },
+        {
+          "number": 4,
+          "prompt": "Bond’s Cookery School: food that is ______."
+        },
+        {
+          "number": 5,
+          "prompt": "Bond’s Cookery School: includes recipes to strengthen your ______."
+        },
+        {
+          "number": 6,
+          "prompt": "Bond’s Cookery School: they have a free ______ every Thursday."
+        },
+        {
+          "number": 7,
+          "prompt": "The ______ Centre."
+        },
+        {
+          "number": 8,
+          "prompt": "The centre mainly offers ______ food."
+        },
+        {
+          "number": 9,
+          "prompt": "The centre is located near the ______."
+        },
+        {
+          "number": 10,
+          "prompt": "A special course in skills with a ______ is sometimes available."
+        }
+      ]
+    },
+    {
+      "sectionNumber": 2,
+      "title": "Section 2 (Questions 11-20) — Traffic Changes in Granford",
+      "instruction": "Questions 11-13: Choose the correct letter, A, B or C. Questions 14-20: Label the map. Write the correct letter, A-I, next to each question. For Questions 14-20, use the original map on page 3 of question batch 01.pdf.",
+      "questions": [
+        {
+          "number": 11,
+          "prompt": "Why are changes needed to traffic systems in Granford?\nA. The number of traffic accidents has risen.\nB. The amount of traffic on the roads has increased.\nC. The types of vehicles on the roads have changed."
+        },
+        {
+          "number": 12,
+          "prompt": "In a survey, local residents particularly complained about\nA. dangerous driving by parents.\nB. pollution from trucks and lorries.\nC. inconvenience from parked cars."
+        },
+        {
+          "number": 13,
+          "prompt": "According to the speaker, one problem with the new regulations will be\nA. raising money to pay for them.\nB. finding a way to make people follow them.\nC. getting the support of the police."
+        },
+        {
+          "number": 14,
+          "prompt": "Map labelling — New traffic lights. Write the correct letter A-I. Refer to the original Granford traffic changes map (question batch 01.pdf, page 3)."
+        },
+        {
+          "number": 15,
+          "prompt": "Map labelling — Pedestrian crossing. Write the correct letter A-I. Refer to the original Granford traffic changes map (question batch 01.pdf, page 3)."
+        },
+        {
+          "number": 16,
+          "prompt": "Map labelling — Parking allowed. Write the correct letter A-I. Refer to the original Granford traffic changes map (question batch 01.pdf, page 3)."
+        },
+        {
+          "number": 17,
+          "prompt": "Map labelling — New ‘No Parking’ sign. Write the correct letter A-I. Refer to the original Granford traffic changes map (question batch 01.pdf, page 3)."
+        },
+        {
+          "number": 18,
+          "prompt": "Map labelling — New disabled parking spaces. Write the correct letter A-I. Refer to the original Granford traffic changes map (question batch 01.pdf, page 3)."
+        },
+        {
+          "number": 19,
+          "prompt": "Map labelling — Widened pavement. Write the correct letter A-I. Refer to the original Granford traffic changes map (question batch 01.pdf, page 3)."
+        },
+        {
+          "number": 20,
+          "prompt": "Map labelling — Lorry loading/unloading restrictions. Write the correct letter A-I. Refer to the original Granford traffic changes map (question batch 01.pdf, page 3)."
+        }
+      ]
+    },
+    {
+      "sectionNumber": 3,
+      "title": "Section 3 (Questions 21-30) — Seed Germination",
+      "instruction": "Questions 21-25: Choose the correct letter, A, B or C. Questions 26-30: Complete the flow-chart. Choose FIVE answers from the box and write the correct letter, A-H.",
+      "questions": [
+        {
+          "number": 21,
+          "prompt": "Why is Jack interested in investigating seed germination?\nA. He may do a module on a related topic later on.\nB. He wants to have a career in plant science.\nC. He is thinking of choosing this topic for his dissertation."
+        },
+        {
+          "number": 22,
+          "prompt": "Jack and Emma agree the main advantage of their present experiment is that it can be\nA. described very easily.\nB. carried out inside the laboratory.\nC. completed in the time available."
+        },
+        {
+          "number": 23,
+          "prompt": "What do they decide to check with their tutor?\nA. whether their aim is appropriate\nB. whether anyone else has chosen this topic\nC. whether the assignment contributes to their final grade"
+        },
+        {
+          "number": 24,
+          "prompt": "They agree that Graves’ book on seed germination is disappointing because\nA. it fails to cover recent advances in seed science.\nB. the content is irrelevant for them.\nC. its focus is very theoretical."
+        },
+        {
+          "number": 25,
+          "prompt": "What does Jack say about the article on seed germination by Lee Hall?\nA. The diagrams of plant development are useful.\nB. The analysis of seed germination statistics is thorough.\nC. The findings on seed germination after fires are surprising."
+        },
+        {
+          "number": 26,
+          "prompt": "Flow-chart — Select seeds of different ______ and sizes. Choose the correct option letter from: A. container; B. soil; C. weight; D. condition; E. height; F. colour; G. types; H. depths."
+        },
+        {
+          "number": 27,
+          "prompt": "Flow-chart — Measure and record the ______ and size of each one. Choose the correct option letter from: A. container; B. soil; C. weight; D. condition; E. height; F. colour; G. types; H. depths."
+        },
+        {
+          "number": 28,
+          "prompt": "Flow-chart — Decide on the ______ to be used. Choose the correct option letter from: A. container; B. soil; C. weight; D. condition; E. height; F. colour; G. types; H. depths."
+        },
+        {
+          "number": 29,
+          "prompt": "Flow-chart — Use a different ______ for each seed and label it. Choose the correct option letter from: A. container; B. soil; C. weight; D. condition; E. height; F. colour; G. types; H. depths."
+        },
+        {
+          "number": 30,
+          "prompt": "Flow-chart — After about 3 weeks, record the plant’s ______. Choose the correct option letter from: A. container; B. soil; C. weight; D. condition; E. height; F. colour; G. types; H. depths."
+        }
+      ]
+    },
+    {
+      "sectionNumber": 4,
+      "title": "Section 4 (Questions 31-40) — Effects of Urban Environments on Animals",
+      "instruction": "Complete the notes below. Write ONE WORD ONLY for each answer.",
+      "questions": [
+        {
+          "number": 31,
+          "prompt": "Introduction: the ______ — because of its general adaptability."
+        },
+        {
+          "number": 32,
+          "prompt": "Introduction: the pigeon — because walls of city buildings are similar to ______."
+        },
+        {
+          "number": 33,
+          "prompt": "Introduction: many urban animals are adapting with unusual ______."
+        },
+        {
+          "number": 34,
+          "prompt": "Recent research — Emilie Snell-Rood found the size of their ______ had increased."
+        },
+        {
+          "number": 35,
+          "prompt": "Recent research — this may be due to the need to locate new sources of ______ and to deal with new dangers."
+        },
+        {
+          "number": 36,
+          "prompt": "Recent research — Catarina Miranda focused on the ______ of urban and rural blackbirds."
+        },
+        {
+          "number": 37,
+          "prompt": "Recent research — urban birds were often braver, but were afraid of situations that were ______."
+        },
+        {
+          "number": 38,
+          "prompt": "Recent research — some animals respond to ______ by producing lower levels of hormones."
+        },
+        {
+          "number": 39,
+          "prompt": "Recent research — urban squirrels use their ______ to help them communicate."
+        },
+        {
+          "number": 40,
+          "prompt": "Long-term possibilities — some changes may not be ______."
+        }
+      ]
+    }
+  ],
+  "notesForIntegration": {
+    "audio": "audioUrl is intentionally empty here. Preserve or set the actual Batch 01 audio path in the project; do not overwrite a working audio path with an empty string.",
+    "mapImage": "Questions 14-20 require the original map image from question batch 01.pdf, page 3. Keep that page/image available to Antigravity; the map has not been recreated or inferred in this JSON.",
+    "answerKey": "Answers transcribed from key answer batch 01.pdf. Spelling variants are represented as arrays where appropriate.",
+    "scope": "Listening only. Reading passages and reading answer keys are not populated."
+  }
+}

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice Exam | IELTS-Etips</title>
+  <meta name="description" content="IELTS Practice Examination - Single Continuous Examination Template">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Base Stylesheet & Practice Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/practice.css">
+
+  <!-- PDF.js for Clean Toolbar-Free PDF Rendering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+
+  <!-- ==========================================
+       TOPBAR & SECTION QUICK JUMP
+       ========================================== -->
+  <header class="practice-header">
+    <div class="container practice-header-inner">
+      <div class="practice-nav-left">
+        <a href="practice-library.html" class="btn btn-secondary btn-sm" aria-label="Back to Practice Library">
+          <i class="fa-solid fa-arrow-left"></i> Library
+        </a>
+        <div class="logo-text-wrap" style="margin-left: 6px;">
+          <span class="logo-title" style="font-size: 1.05rem;">IELTS <span>PRACTICE ENGINE</span></span>
+          <span class="logo-subtitle" id="topbarBatchLabel" style="font-size: 0.7rem;">Practice Exam — Batch 01</span>
+        </div>
+      </div>
+
+      <!-- Quick Anchor Jump to Sections -->
+      <nav class="exam-jump-bar" aria-label="Exam Section Jumps">
+        <a href="#sec-listening" class="jump-link">
+          <i class="fa-solid fa-headphones"></i> 1. Listening
+        </a>
+        <a href="#sec-reading" class="jump-link">
+          <i class="fa-solid fa-book-open"></i> 2. Reading
+        </a>
+        <a href="#sec-writing" class="jump-link">
+          <i class="fa-solid fa-pen-nib"></i> 3. Writing
+        </a>
+        <a href="#sec-speaking" class="jump-link">
+          <i class="fa-solid fa-microphone"></i> 4. Speaking
+        </a>
+      </nav>
+
+      <div class="practice-nav-right">
+        <span class="practice-badge">
+          <i class="fa-solid fa-desktop"></i> Computer-Based UI
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       MAIN CONTINUOUS EXAMINATION BODY
+       ========================================== -->
+  <main class="exam-container">
+
+    <!-- Exam Title & Batch Header -->
+    <div class="exam-page-heading" style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+      <div>
+        <h1 id="examHeading" style="font-size: 1.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px;">
+          Practice Exam — <span class="highlight-yellow" id="examBatchDisplay">Batch 01</span>
+        </h1>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+          Continuous Computer-Based Practice Engine (Listening, Reading, Writing, Speaking)
+        </p>
+      </div>
+      <div class="practice-badge" id="examBatchBadge">
+        <i class="fa-solid fa-layer-group"></i> Batch 01
+      </div>
+    </div>
+
+    <!-- ==========================================
+         SECTION 1: LISTENING
+         ========================================== -->
+    <section class="exam-section" id="sec-listening" aria-labelledby="banner-listening">
+      
+      <!-- Section Banner -->
+      <div class="exam-section-banner">
+        <div class="banner-left">
+          <div class="banner-icon">
+            <i class="fa-solid fa-headphones"></i>
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h2 class="banner-title" id="banner-listening">SECTION 1: LISTENING</h2>
+              <span class="status-badge active" id="listeningStatusBadge"><i class="fa-solid fa-circle-check"></i> Ready</span>
+            </div>
+            <p class="banner-subtitle">
+              [Listening Audio &amp; Question Materials Placeholder — 40 Questions]
+            </p>
+          </div>
+        </div>
+
+        <!-- Timer & Section Actions -->
+        <div class="section-actions">
+          <div class="exam-timer-box" aria-label="Listening Countdown Timer">
+            <i class="fa-regular fa-clock"></i>
+            <span class="timer-digits" id="timerListening">00:30:00</span>
+            <span class="timer-note">30 Min</span>
+          </div>
+          <button type="button" class="btn btn-primary btn-sm" id="btnStartListening">
+            <i class="fa-solid fa-play"></i> Start Section
+          </button>
+          <button type="button" class="btn btn-outline-gold btn-sm" id="btnSubmitListening">
+            <i class="fa-solid fa-check-double"></i> Submit Listening
+          </button>
+        </div>
+      </div>
+
+      <!-- Two-Column Exam Grid (60% Left / 40% Right) -->
+      <div class="exam-two-col">
+        
+        <!-- Left Column: PDF Question Paper & Section Audio Players (~60%) -->
+        <div class="exam-col-material" style="padding: 0; overflow: hidden; display: flex; flex-direction: column;">
+          <div class="col-header" style="padding: 14px 20px; margin: 0; flex-shrink: 0;">
+            <span class="col-header-title">
+              <i class="fa-solid fa-file-pdf" style="color: var(--accent-primary);"></i> Question Paper — Batch 01
+            </span>
+            <span class="col-header-tag" id="pdfViewerBadge"><i class="fa-solid fa-file-pdf"></i> PDF Viewer</span>
+          </div>
+
+          <!-- Hidden HTML5 Audio Element (kept for engine compatibility) -->
+          <audio id="listeningAudioElement" preload="none" style="display:none;"></audio>
+
+          <!-- Per-Section Audio Players (rendered by practice-engine.js) -->
+          <div id="listeningQuestionsContainer" style="flex-shrink:0; overflow-y:auto; max-height:175px; padding:0 16px 8px; border-bottom:1px solid var(--border-subtle,#2a3550);">
+            <!-- Per-section audio controls rendered dynamically by js/practice-engine.js -->
+          </div>
+
+          <!-- PDF Viewer Container: Clean PDF.js Canvas + Iframe Fallback -->
+          <div id="listeningPdfContainer" style="flex: 1; overflow: hidden; position: relative; background: #090e1a;">
+            <!-- Clean PDF.js rendered pages container (No toolbars, no sidebars, full vertical scroll) -->
+            <div id="pdfCanvasPages" class="pdf-clean-viewer" style="display: none;"></div>
+
+            <!-- Fallback Iframe (Clean URL params if PDF.js is unavailable) -->
+            <iframe
+              id="listeningPdfViewer"
+              src="assets/data/listening/batch 01/question batch 01 new.pdf#toolbar=0&navpanes=0&scrollbar=1&view=FitH"
+              style="width: 100%; height: 100%; border: none; display: block;"
+              title="IELTS Listening Batch 01 — Question Paper"
+              allow="fullscreen"
+            ></iframe>
+          </div>
+        </div>
+
+        <!-- Right Column: 40 Answer Inputs Sheet (~40%) -->
+        <div class="exam-col-response">
+          <div class="col-header">
+            <span class="col-header-title">
+              <i class="fa-solid fa-list-check" style="color: var(--accent-primary);"></i> Listening Answer Sheet (1–40)
+            </span>
+            <span class="col-header-tag">[40 Questions Grid]</span>
+          </div>
+
+          <!-- 40 Answer Inputs in Compact 2-Column Grid -->
+          <div class="answers-grid-40" id="listeningAnswersContainer">
+            <div class="answer-row"><span class="answer-label">Q 01</span><input type="text" class="answer-input-mock" id="listening_ans_1" placeholder="Ans 1..."></div>
+            <div class="answer-row"><span class="answer-label">Q 02</span><input type="text" class="answer-input-mock" id="listening_ans_2" placeholder="Ans 2..."></div>
+            <div class="answer-row"><span class="answer-label">Q 03</span><input type="text" class="answer-input-mock" id="listening_ans_3" placeholder="Ans 3..."></div>
+            <div class="answer-row"><span class="answer-label">Q 04</span><input type="text" class="answer-input-mock" id="listening_ans_4" placeholder="Ans 4..."></div>
+            <div class="answer-row"><span class="answer-label">Q 05</span><input type="text" class="answer-input-mock" id="listening_ans_5" placeholder="Ans 5..."></div>
+            <div class="answer-row"><span class="answer-label">Q 06</span><input type="text" class="answer-input-mock" id="listening_ans_6" placeholder="Ans 6..."></div>
+            <div class="answer-row"><span class="answer-label">Q 07</span><input type="text" class="answer-input-mock" id="listening_ans_7" placeholder="Ans 7..."></div>
+            <div class="answer-row"><span class="answer-label">Q 08</span><input type="text" class="answer-input-mock" id="listening_ans_8" placeholder="Ans 8..."></div>
+            <div class="answer-row"><span class="answer-label">Q 09</span><input type="text" class="answer-input-mock" id="listening_ans_9" placeholder="Ans 9..."></div>
+            <div class="answer-row"><span class="answer-label">Q 10</span><input type="text" class="answer-input-mock" id="listening_ans_10" placeholder="Ans 10..."></div>
+            <div class="answer-row"><span class="answer-label">Q 11</span><input type="text" class="answer-input-mock" id="listening_ans_11" placeholder="Ans 11..."></div>
+            <div class="answer-row"><span class="answer-label">Q 12</span><input type="text" class="answer-input-mock" id="listening_ans_12" placeholder="Ans 12..."></div>
+            <div class="answer-row"><span class="answer-label">Q 13</span><input type="text" class="answer-input-mock" id="listening_ans_13" placeholder="Ans 13..."></div>
+            <div class="answer-row"><span class="answer-label">Q 14</span><input type="text" class="answer-input-mock" id="listening_ans_14" placeholder="Ans 14..."></div>
+            <div class="answer-row"><span class="answer-label">Q 15</span><input type="text" class="answer-input-mock" id="listening_ans_15" placeholder="Ans 15..."></div>
+            <div class="answer-row"><span class="answer-label">Q 16</span><input type="text" class="answer-input-mock" id="listening_ans_16" placeholder="Ans 16..."></div>
+            <div class="answer-row"><span class="answer-label">Q 17</span><input type="text" class="answer-input-mock" id="listening_ans_17" placeholder="Ans 17..."></div>
+            <div class="answer-row"><span class="answer-label">Q 18</span><input type="text" class="answer-input-mock" id="listening_ans_18" placeholder="Ans 18..."></div>
+            <div class="answer-row"><span class="answer-label">Q 19</span><input type="text" class="answer-input-mock" id="listening_ans_19" placeholder="Ans 19..."></div>
+            <div class="answer-row"><span class="answer-label">Q 20</span><input type="text" class="answer-input-mock" id="listening_ans_20" placeholder="Ans 20..."></div>
+            <div class="answer-row"><span class="answer-label">Q 21</span><input type="text" class="answer-input-mock" id="listening_ans_21" placeholder="Ans 21..."></div>
+            <div class="answer-row"><span class="answer-label">Q 22</span><input type="text" class="answer-input-mock" id="listening_ans_22" placeholder="Ans 22..."></div>
+            <div class="answer-row"><span class="answer-label">Q 23</span><input type="text" class="answer-input-mock" id="listening_ans_23" placeholder="Ans 23..."></div>
+            <div class="answer-row"><span class="answer-label">Q 24</span><input type="text" class="answer-input-mock" id="listening_ans_24" placeholder="Ans 24..."></div>
+            <div class="answer-row"><span class="answer-label">Q 25</span><input type="text" class="answer-input-mock" id="listening_ans_25" placeholder="Ans 25..."></div>
+            <div class="answer-row"><span class="answer-label">Q 26</span><input type="text" class="answer-input-mock" id="listening_ans_26" placeholder="Ans 26..."></div>
+            <div class="answer-row"><span class="answer-label">Q 27</span><input type="text" class="answer-input-mock" id="listening_ans_27" placeholder="Ans 27..."></div>
+            <div class="answer-row"><span class="answer-label">Q 28</span><input type="text" class="answer-input-mock" id="listening_ans_28" placeholder="Ans 28..."></div>
+            <div class="answer-row"><span class="answer-label">Q 29</span><input type="text" class="answer-input-mock" id="listening_ans_29" placeholder="Ans 29..."></div>
+            <div class="answer-row"><span class="answer-label">Q 30</span><input type="text" class="answer-input-mock" id="listening_ans_30" placeholder="Ans 30..."></div>
+            <div class="answer-row"><span class="answer-label">Q 31</span><input type="text" class="answer-input-mock" id="listening_ans_31" placeholder="Ans 31..."></div>
+            <div class="answer-row"><span class="answer-label">Q 32</span><input type="text" class="answer-input-mock" id="listening_ans_32" placeholder="Ans 32..."></div>
+            <div class="answer-row"><span class="answer-label">Q 33</span><input type="text" class="answer-input-mock" id="listening_ans_33" placeholder="Ans 33..."></div>
+            <div class="answer-row"><span class="answer-label">Q 34</span><input type="text" class="answer-input-mock" id="listening_ans_34" placeholder="Ans 34..."></div>
+            <div class="answer-row"><span class="answer-label">Q 35</span><input type="text" class="answer-input-mock" id="listening_ans_35" placeholder="Ans 35..."></div>
+            <div class="answer-row"><span class="answer-label">Q 36</span><input type="text" class="answer-input-mock" id="listening_ans_36" placeholder="Ans 36..."></div>
+            <div class="answer-row"><span class="answer-label">Q 37</span><input type="text" class="answer-input-mock" id="listening_ans_37" placeholder="Ans 37..."></div>
+            <div class="answer-row"><span class="answer-label">Q 38</span><input type="text" class="answer-input-mock" id="listening_ans_38" placeholder="Ans 38..."></div>
+            <div class="answer-row"><span class="answer-label">Q 39</span><input type="text" class="answer-input-mock" id="listening_ans_39" placeholder="Ans 39..."></div>
+            <div class="answer-row"><span class="answer-label">Q 40</span><input type="text" class="answer-input-mock" id="listening_ans_40" placeholder="Ans 40..."></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Section Results Container (Displayed below on submission) -->
+      <div class="exam-results-container" id="listeningResultsArea"></div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 2: READING
+         ========================================== -->
+    <section class="exam-section" id="sec-reading" aria-labelledby="banner-reading">
+      
+      <!-- Section Banner -->
+      <div class="exam-section-banner">
+        <div class="banner-left">
+          <div class="banner-icon">
+            <i class="fa-solid fa-book-open"></i>
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h2 class="banner-title" id="banner-reading">SECTION 2: READING</h2>
+              <span class="status-badge active" id="readingStatusBadge"><i class="fa-solid fa-circle-check"></i> Ready</span>
+            </div>
+            <p class="banner-subtitle">
+              [Reading Passages 1 to 3 &amp; Question Materials Placeholder — 40 Questions]
+            </p>
+          </div>
+        </div>
+
+        <!-- Timer & Section Actions -->
+        <div class="section-actions">
+          <div class="exam-timer-box" aria-label="Reading Countdown Timer">
+            <i class="fa-regular fa-clock"></i>
+            <span class="timer-digits" id="timerReading">01:00:00</span>
+            <span class="timer-note">60 Min</span>
+          </div>
+          <button type="button" class="btn btn-primary btn-sm" id="btnStartReading">
+            <i class="fa-solid fa-play"></i> Start Section
+          </button>
+          <button type="button" class="btn btn-outline-gold btn-sm" id="btnSubmitReading">
+            <i class="fa-solid fa-check-double"></i> Submit Reading
+          </button>
+        </div>
+      </div>
+
+      <!-- Two-Column Exam Grid (60% Left / 40% Right) -->
+      <div class="exam-two-col">
+        
+        <!-- Left Column: Empty Passage Display & Questions 1–10 (~60%) -->
+        <div class="exam-col-material">
+          <div class="col-header">
+            <span class="col-header-title">
+              <i class="fa-solid fa-file-lines" style="color: var(--accent-primary);"></i> Reading Passage &amp; Question Prompts
+            </span>
+            <span class="col-header-tag">[Material Column ~60%]</span>
+          </div>
+
+          <!-- Dynamic 3 Reading Passages Container for Active Batch -->
+          <div class="passage-display-area" id="readingPassageContainer">
+            <!-- Rendered dynamically by js/practice-engine.js -->
+          </div>
+
+          <!-- Dynamic 40 Questions Container for Active Batch -->
+          <div class="question-items-list" id="readingQuestionsContainer">
+            <!-- Rendered dynamically by js/practice-engine.js -->
+          </div>
+        </div>
+
+        <!-- Right Column: 40 Answer Inputs Sheet (~40%) -->
+        <div class="exam-col-response">
+          <div class="col-header">
+            <span class="col-header-title">
+              <i class="fa-solid fa-list-check" style="color: var(--accent-primary);"></i> Reading Answer Sheet (1–40)
+            </span>
+            <span class="col-header-tag">[40 Questions Grid]</span>
+          </div>
+
+          <!-- 40 Answer Inputs in Compact 2-Column Grid -->
+          <div class="answers-grid-40" id="readingAnswersContainer">
+            <div class="answer-row"><span class="answer-label">Q 01</span><input type="text" class="answer-input-mock" id="reading_ans_1" placeholder="Ans 1..."></div>
+            <div class="answer-row"><span class="answer-label">Q 02</span><input type="text" class="answer-input-mock" id="reading_ans_2" placeholder="Ans 2..."></div>
+            <div class="answer-row"><span class="answer-label">Q 03</span><input type="text" class="answer-input-mock" id="reading_ans_3" placeholder="Ans 3..."></div>
+            <div class="answer-row"><span class="answer-label">Q 04</span><input type="text" class="answer-input-mock" id="reading_ans_4" placeholder="Ans 4..."></div>
+            <div class="answer-row"><span class="answer-label">Q 05</span><input type="text" class="answer-input-mock" id="reading_ans_5" placeholder="Ans 5..."></div>
+            <div class="answer-row"><span class="answer-label">Q 06</span><input type="text" class="answer-input-mock" id="reading_ans_6" placeholder="Ans 6..."></div>
+            <div class="answer-row"><span class="answer-label">Q 07</span><input type="text" class="answer-input-mock" id="reading_ans_7" placeholder="Ans 7..."></div>
+            <div class="answer-row"><span class="answer-label">Q 08</span><input type="text" class="answer-input-mock" id="reading_ans_8" placeholder="Ans 8..."></div>
+            <div class="answer-row"><span class="answer-label">Q 09</span><input type="text" class="answer-input-mock" id="reading_ans_9" placeholder="Ans 9..."></div>
+            <div class="answer-row"><span class="answer-label">Q 10</span><input type="text" class="answer-input-mock" id="reading_ans_10" placeholder="Ans 10..."></div>
+            <div class="answer-row"><span class="answer-label">Q 11</span><input type="text" class="answer-input-mock" id="reading_ans_11" placeholder="Ans 11..."></div>
+            <div class="answer-row"><span class="answer-label">Q 12</span><input type="text" class="answer-input-mock" id="reading_ans_12" placeholder="Ans 12..."></div>
+            <div class="answer-row"><span class="answer-label">Q 13</span><input type="text" class="answer-input-mock" id="reading_ans_13" placeholder="Ans 13..."></div>
+            <div class="answer-row"><span class="answer-label">Q 14</span><input type="text" class="answer-input-mock" id="reading_ans_14" placeholder="Ans 14..."></div>
+            <div class="answer-row"><span class="answer-label">Q 15</span><input type="text" class="answer-input-mock" id="reading_ans_15" placeholder="Ans 15..."></div>
+            <div class="answer-row"><span class="answer-label">Q 16</span><input type="text" class="answer-input-mock" id="reading_ans_16" placeholder="Ans 16..."></div>
+            <div class="answer-row"><span class="answer-label">Q 17</span><input type="text" class="answer-input-mock" id="reading_ans_17" placeholder="Ans 17..."></div>
+            <div class="answer-row"><span class="answer-label">Q 18</span><input type="text" class="answer-input-mock" id="reading_ans_18" placeholder="Ans 18..."></div>
+            <div class="answer-row"><span class="answer-label">Q 19</span><input type="text" class="answer-input-mock" id="reading_ans_19" placeholder="Ans 19..."></div>
+            <div class="answer-row"><span class="answer-label">Q 20</span><input type="text" class="answer-input-mock" id="reading_ans_20" placeholder="Ans 20..."></div>
+            <div class="answer-row"><span class="answer-label">Q 21</span><input type="text" class="answer-input-mock" id="reading_ans_21" placeholder="Ans 21..."></div>
+            <div class="answer-row"><span class="answer-label">Q 22</span><input type="text" class="answer-input-mock" id="reading_ans_22" placeholder="Ans 22..."></div>
+            <div class="answer-row"><span class="answer-label">Q 23</span><input type="text" class="answer-input-mock" id="reading_ans_23" placeholder="Ans 23..."></div>
+            <div class="answer-row"><span class="answer-label">Q 24</span><input type="text" class="answer-input-mock" id="reading_ans_24" placeholder="Ans 24..."></div>
+            <div class="answer-row"><span class="answer-label">Q 25</span><input type="text" class="answer-input-mock" id="reading_ans_25" placeholder="Ans 25..."></div>
+            <div class="answer-row"><span class="answer-label">Q 26</span><input type="text" class="answer-input-mock" id="reading_ans_26" placeholder="Ans 26..."></div>
+            <div class="answer-row"><span class="answer-label">Q 27</span><input type="text" class="answer-input-mock" id="reading_ans_27" placeholder="Ans 27..."></div>
+            <div class="answer-row"><span class="answer-label">Q 28</span><input type="text" class="answer-input-mock" id="reading_ans_28" placeholder="Ans 28..."></div>
+            <div class="answer-row"><span class="answer-label">Q 29</span><input type="text" class="answer-input-mock" id="reading_ans_29" placeholder="Ans 29..."></div>
+            <div class="answer-row"><span class="answer-label">Q 30</span><input type="text" class="answer-input-mock" id="reading_ans_30" placeholder="Ans 30..."></div>
+            <div class="answer-row"><span class="answer-label">Q 31</span><input type="text" class="answer-input-mock" id="reading_ans_31" placeholder="Ans 31..."></div>
+            <div class="answer-row"><span class="answer-label">Q 32</span><input type="text" class="answer-input-mock" id="reading_ans_32" placeholder="Ans 32..."></div>
+            <div class="answer-row"><span class="answer-label">Q 33</span><input type="text" class="answer-input-mock" id="reading_ans_33" placeholder="Ans 33..."></div>
+            <div class="answer-row"><span class="answer-label">Q 34</span><input type="text" class="answer-input-mock" id="reading_ans_34" placeholder="Ans 34..."></div>
+            <div class="answer-row"><span class="answer-label">Q 35</span><input type="text" class="answer-input-mock" id="reading_ans_35" placeholder="Ans 35..."></div>
+            <div class="answer-row"><span class="answer-label">Q 36</span><input type="text" class="answer-input-mock" id="reading_ans_36" placeholder="Ans 36..."></div>
+            <div class="answer-row"><span class="answer-label">Q 37</span><input type="text" class="answer-input-mock" id="reading_ans_37" placeholder="Ans 37..."></div>
+            <div class="answer-row"><span class="answer-label">Q 38</span><input type="text" class="answer-input-mock" id="reading_ans_38" placeholder="Ans 38..."></div>
+            <div class="answer-row"><span class="answer-label">Q 39</span><input type="text" class="answer-input-mock" id="reading_ans_39" placeholder="Ans 39..."></div>
+            <div class="answer-row"><span class="answer-label">Q 40</span><input type="text" class="answer-input-mock" id="reading_ans_40" placeholder="Ans 40..."></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Section Results Container (Displayed below on submission) -->
+      <div class="exam-results-container" id="readingResultsArea"></div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 3: WRITING
+         ========================================== -->
+    <section class="exam-section" id="sec-writing" aria-labelledby="banner-writing">
+      
+      <!-- Section Banner -->
+      <div class="exam-section-banner">
+        <div class="banner-left">
+          <div class="banner-icon">
+            <i class="fa-solid fa-pen-nib"></i>
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h2 class="banner-title" id="banner-writing">SECTION 3: WRITING</h2>
+              <span class="status-badge active" id="writingStatusBadge"><i class="fa-solid fa-circle-check"></i> Ready</span>
+            </div>
+            <p class="banner-subtitle">
+              [Writing Task 1 &amp; Task 2 Prompts &amp; Response Editors — Shared 60 Min]
+            </p>
+          </div>
+        </div>
+
+        <!-- Shared Timer & Actions -->
+        <div class="section-actions">
+          <div class="exam-timer-box" aria-label="Writing Countdown Timer">
+            <i class="fa-regular fa-clock"></i>
+            <span class="timer-digits" id="timerWriting">01:00:00</span>
+            <span class="timer-note">Shared 60 Min</span>
+          </div>
+          <button type="button" class="btn btn-primary btn-sm" id="btnStartWriting">
+            <i class="fa-solid fa-play"></i> Start Section
+          </button>
+          <button type="button" class="btn btn-outline-gold btn-sm" id="btnSubmitWriting">
+            <i class="fa-solid fa-check-double"></i> Submit Writing
+          </button>
+        </div>
+      </div>
+
+      <!-- Writing Task 1 Block -->
+      <div class="exam-two-col writing-task-block">
+        <!-- Left: Task 1 Prompt Area (~60%) -->
+        <div class="exam-col-material">
+          <div class="task-header">
+            <i class="fa-solid fa-chart-column"></i> Task 1 (Recommended: 20 Minutes)
+          </div>
+          <div class="prompt-display-area">
+            [Task 1 Prompt &amp; Diagram/Chart Display Area Placeholder — Visual graphic, data table, process chart, or map instructions will be placed here.]
+          </div>
+        </div>
+
+        <!-- Right: Task 1 Editor & Controls (~40%) -->
+        <div class="exam-col-response">
+          <div class="col-header">
+            <span class="col-header-title">
+              <i class="fa-solid fa-file-pen" style="color: var(--accent-primary);"></i> Task 1 Response
+            </span>
+            <span class="col-header-tag">[Min: 150 words]</span>
+          </div>
+
+          <textarea class="exam-textarea" id="writingTask1Text" placeholder="[Type Task 1 response here...]" aria-label="Task 1 Response Editor"></textarea>
+
+          <div class="editor-toolbar">
+            <div class="word-counter-badge">
+              <i class="fa-solid fa-i-cursor"></i> Word count: <strong id="task1WordCount">0</strong> words (Min: 150 words)
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" id="btnCopyTask1" aria-label="Copy Task 1 Answer">
+              <i class="fa-regular fa-copy"></i> Copy Answer
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Writing Task 2 Block -->
+      <div class="exam-two-col">
+        <!-- Left: Task 2 Prompt Area (~60%) -->
+        <div class="exam-col-material">
+          <div class="task-header">
+            <i class="fa-solid fa-align-left"></i> Task 2 (Recommended: 40 Minutes)
+          </div>
+          <div class="prompt-display-area">
+            [Task 2 Essay Prompt Display Area Placeholder — Discussion question, opinion statement, problem-solution topic, and instructions will be placed here.]
+          </div>
+        </div>
+
+        <!-- Right: Task 2 Editor & Controls (~40%) -->
+        <div class="exam-col-response">
+          <div class="col-header">
+            <span class="col-header-title">
+              <i class="fa-solid fa-file-pen" style="color: var(--accent-primary);"></i> Task 2 Response
+            </span>
+            <span class="col-header-tag">[Min: 250 words]</span>
+          </div>
+
+          <textarea class="exam-textarea" id="writingTask2Text" placeholder="[Type Task 2 response here...]" aria-label="Task 2 Response Editor"></textarea>
+
+          <div class="editor-toolbar">
+            <div class="word-counter-badge">
+              <i class="fa-solid fa-i-cursor"></i> Word count: <strong id="task2WordCount">0</strong> words (Min: 250 words)
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" id="btnCopyTask2" aria-label="Copy Task 2 Answer">
+              <i class="fa-regular fa-copy"></i> Copy Answer
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Results Container (Displayed below on submission) -->
+      <div class="exam-results-container" id="writingResultsArea"></div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 4: SPEAKING
+         ========================================== -->
+    <section class="exam-section" id="sec-speaking" aria-labelledby="banner-speaking">
+      
+      <!-- Section Banner (No Timer Display) -->
+      <div class="exam-section-banner">
+        <div class="banner-left">
+          <div class="banner-icon">
+            <i class="fa-solid fa-microphone"></i>
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h2 class="banner-title" id="banner-speaking">SECTION 4: SPEAKING</h2>
+              <span class="status-badge active" id="speakingStatusBadge"><i class="fa-solid fa-circle-check"></i> Ready</span>
+            </div>
+            <p class="banner-subtitle">
+              [Speaking Part 1, Part 2, and Part 3 Questions &amp; Notes Area — No Timer]
+            </p>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="section-actions">
+          <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-user-clock"></i>
+            <span>Examiner-Guided (No Timer)</span>
+          </div>
+          <button type="button" class="btn btn-outline-gold btn-sm" id="btnSubmitSpeaking">
+            <i class="fa-solid fa-check-double"></i> Submit Speaking
+          </button>
+        </div>
+      </div>
+
+      <!-- Two-Column Exam Grid (60% Left / 40% Right) -->
+      <div class="exam-two-col">
+        
+        <!-- Left Column: Parts 1, 2, and 3 Question Display Areas (~60%) -->
+        <div class="exam-col-material">
+          <div class="col-header">
+            <span class="col-header-title">
+              <i class="fa-solid fa-clipboard-question" style="color: var(--accent-primary);"></i> Speaking Parts 1, 2 &amp; 3 Prompts
+            </span>
+            <span class="col-header-tag">[Material Column ~60%]</span>
+          </div>
+
+          <!-- Part 1 Block -->
+          <div class="speaking-part-block">
+            <div class="part-header">
+              <i class="fa-regular fa-circle-dot"></i> Part 1: Introduction &amp; Interview
+            </div>
+            <div class="speaking-prompt-placeholder">
+              [Empty Part 1 Questions Display Area — Familiar topics and introductory questions will be displayed here.]
+            </div>
+          </div>
+
+          <!-- Part 2 Block -->
+          <div class="speaking-part-block">
+            <div class="part-header">
+              <i class="fa-regular fa-circle-dot"></i> Part 2: Individual Long Turn (Cue Card)
+            </div>
+            <div class="speaking-prompt-placeholder">
+              [Empty Part 2 Cue Card Display Area — Topic card, preparation points, and candidate speaking prompts will be displayed here.]
+            </div>
+          </div>
+
+          <!-- Part 3 Block -->
+          <div class="speaking-part-block">
+            <div class="part-header">
+              <i class="fa-regular fa-circle-dot"></i> Part 3: Two-way Discussion
+            </div>
+            <div class="speaking-prompt-placeholder">
+              [Empty Part 3 Discussion Prompts Display Area — In-depth abstract questions and discussion topics will be displayed here.]
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Candidate Notes Area (~40%) -->
+        <div class="exam-col-response">
+          <div class="col-header">
+            <span class="col-header-title">
+              <i class="fa-regular fa-note-sticky" style="color: var(--accent-primary);"></i> Candidate Notes Area
+            </span>
+            <span class="col-header-tag">[Response Column ~40%]</span>
+          </div>
+
+          <div class="notes-area-container">
+            <textarea class="exam-textarea" id="speakingNotesText" style="min-height: 260px;" placeholder="[Take candidate notes here during preparation or practice simulation...]" aria-label="Candidate Notes Area"></textarea>
+            <div class="support-40-notice" style="margin-top: 0;">
+              <i class="fa-solid fa-circle-info"></i>
+              <span>[Notes are for candidate preparation only and will not be assessed in the test score.]</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Section Results Container (Displayed below on submission) -->
+      <div class="exam-results-container" id="speakingResultsArea"></div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       SUBMISSION CONFIRMATION MODAL
+       ========================================== -->
+  <div class="modal-overlay" id="submissionConfirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+    <div class="modal-container" style="max-width: 520px;">
+      <button class="modal-close-btn cancel-confirm-modal" aria-label="Close Modal">&times;</button>
+      <div class="modal-header">
+        <span class="modal-badge"><i class="fa-solid fa-triangle-exclamation"></i> Konfirmasi Pengumpulan</span>
+        <h3 class="modal-title" id="confirmModalTitle">Kumpulkan Jawaban <span id="confirmModalSkillName">SKILL</span>?</h3>
+        <p class="modal-subtitle" id="confirmModalBatchName">Batch 01</p>
+      </div>
+      <div style="padding: 16px 0; font-size: 0.9rem; color: var(--text-body); line-height: 1.6;">
+        <p style="margin-bottom: 10px;">
+          <strong style="color: var(--accent-hover);"><i class="fa-solid fa-lock"></i> PERHATIAN:</strong> Setiap skill hanya dapat dikumpulkan <strong>satu kali (One-Time Submission)</strong>.
+        </p>
+        <p style="margin-bottom: 0; color: var(--text-muted); font-size: 0.85rem;">
+          Setelah konfirmasi, seluruh jawaban pada modul ini akan <strong>terkunci permanen</strong> pada browser Anda dan tidak dapat diubah atau diulang kembali.
+        </p>
+      </div>
+      <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 14px; flex-wrap: wrap;">
+        <button type="button" class="btn btn-secondary cancel-confirm-modal">
+          Batal / Kembali
+        </button>
+        <button type="button" class="btn btn-primary" id="btnConfirmSubmitNow">
+          <i class="fa-solid fa-lock"></i> Ya, Kunci &amp; Kumpulkan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification element -->
+  <div class="toast-notice" id="toastNotice">
+    <i class="fa-solid fa-circle-info toast-icon"></i>
+    <span id="toastMessage">Pemberitahuan</span>
+  </div>
+
+  <!-- ==========================================
+       BOTTOM EXAM SUBMISSION BAR
+       ========================================== -->
+  <footer class="exam-footer-bar">
+    <div class="container exam-footer-inner">
+      <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-shield-halved" style="color: var(--accent-primary);"></i>
+        <span>IELTS-Etips Practice Engine — Independent Section Submissions</span>
+      </div>
+
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <a href="practice-library.html" class="btn btn-secondary btn-sm">
+          <i class="fa-solid fa-arrow-left"></i> Return to Library
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Practice Engine Scripts -->
+  <script src="js/practice-config.js"></script>
+  <script src="js/practice-engine.js"></script>
+
+</body>
+</html>
