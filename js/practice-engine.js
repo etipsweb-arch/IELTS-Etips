@@ -199,8 +199,8 @@
     let activeRenderTasks = [];
     let pdfRenderSeqId = 0;
     let isPdfRendering = false;
+    let needsRerenderAfterCurrent = false;
     let pdfResizeTimer = null;
-    let pdfContainerObserver = null;
     let lastRenderedWidth = 0;
     let lastRenderedDpr = 0;
     let dprMediaQuery = null;
@@ -231,11 +231,11 @@
         badge.innerHTML = '<i class="fa-solid fa-file-lines"></i> ' + totalPages + ' Pages (Full Preview)';
       }
 
-      // Measure container available width
-      let containerWidth = canvasContainer.clientWidth;
+      // Measure container available width from stable parent element
+      const parent = canvasContainer.parentElement;
+      let containerWidth = (parent && parent.clientWidth) ? parent.clientWidth : canvasContainer.clientWidth;
       if (!containerWidth || containerWidth < 100) {
-        const parent = canvasContainer.parentElement;
-        containerWidth = (parent && parent.clientWidth) ? parent.clientWidth : Math.min(window.innerWidth * 0.58, 900);
+        containerWidth = Math.min(window.innerWidth * 0.58, 900);
       }
 
       // Account for padding (12px * 2 = 24px) plus 8px safety breathing space
@@ -252,6 +252,10 @@
         if (seqId !== pdfRenderSeqId || pageNum > totalPages) {
           if (seqId === pdfRenderSeqId) {
             isPdfRendering = false;
+            if (needsRerenderAfterCurrent) {
+              needsRerenderAfterCurrent = false;
+              setTimeout(triggerPdfRerender, 50);
+            }
           }
           return;
         }
@@ -335,6 +339,7 @@
     function fallbackToIframe(url) {
       cancelActivePdfRenderTasks();
       isPdfRendering = false;
+      needsRerenderAfterCurrent = false;
       const canvasContainer = document.getElementById(canvasContainerId);
       const iframeViewer = document.getElementById(iframeViewerId);
       const badge = document.getElementById(badgeId);
@@ -354,6 +359,7 @@
 
     function init(pdfUrl) {
       if (!pdfUrl) return;
+      needsRerenderAfterCurrent = false;
       const isNewPdf = (currentLoadedPdf !== pdfUrl || !cachedPdfDoc);
       currentLoadedPdf = pdfUrl;
 
@@ -408,14 +414,23 @@
     }
 
     function triggerPdfRerender() {
+      // Do not interrupt ongoing rendering; queue re-render after current finishes
+      if (isPdfRendering) {
+        needsRerenderAfterCurrent = true;
+        return;
+      }
+
       const canvasContainer = document.getElementById(canvasContainerId);
       if (!currentLoadedPdf || !canvasContainer || canvasContainer.style.display === 'none') return;
+
+      const parent = canvasContainer.parentElement;
+      const currentWidth = (parent && parent.clientWidth) ? parent.clientWidth : canvasContainer.clientWidth;
       const currentDpr = Math.min(window.devicePixelRatio || 1, 3);
-      const currentWidth = canvasContainer.clientWidth;
-      // Check if re-render is truly needed
+
+      // Check if re-render is truly needed (> 20px threshold avoids minor scrollbar jitter)
       const widthDiff = Math.abs(currentWidth - lastRenderedWidth);
       const dprDiff = Math.abs(currentDpr - lastRenderedDpr);
-      if (widthDiff > 6 || dprDiff > 0.02) {
+      if (widthDiff > 20 || dprDiff > 0.05) {
         if (cachedPdfDoc) {
           pdfRenderSeqId++;
           const badge = document.getElementById(badgeId);
@@ -439,26 +454,10 @@
             dprMediaQuery.addEventListener('change', onDprChangeHandler);
           }
         } catch (e) {}
-      }, 150);
+      }, 300);
     }
 
     function setupWatchers() {
-      const canvasContainer = document.getElementById(canvasContainerId);
-      if (!canvasContainer) return;
-
-      if (typeof ResizeObserver !== 'undefined' && !pdfContainerObserver) {
-        pdfContainerObserver = new ResizeObserver(function (entries) {
-          for (let i = 0; i < entries.length; i++) {
-            const w = Math.round(entries[i].contentRect.width);
-            if (w > 0 && Math.abs(w - lastRenderedWidth) > 6) {
-              clearTimeout(pdfResizeTimer);
-              pdfResizeTimer = setTimeout(triggerPdfRerender, 180);
-            }
-          }
-        });
-        pdfContainerObserver.observe(canvasContainer);
-      }
-
       try {
         if (dprMediaQuery) {
           dprMediaQuery.removeEventListener('change', onDprChangeHandler);
@@ -475,9 +474,10 @@
       } catch (e) {}
     }
 
+    // Responsive window resize with 300ms debounce
     window.addEventListener('resize', function () {
       clearTimeout(pdfResizeTimer);
-      pdfResizeTimer = setTimeout(triggerPdfRerender, 200);
+      pdfResizeTimer = setTimeout(triggerPdfRerender, 300);
     });
 
     return {
