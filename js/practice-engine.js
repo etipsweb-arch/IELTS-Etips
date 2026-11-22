@@ -188,20 +188,157 @@
     }
   }
 
-  // --- CLEAN PDF VIEWER ENGINE (PDF.js Canvas Renderer with Fallback) ---
-  let currentLoadedPdf = null;
-  let isPdfRendering = false;
+  // --- CLEAN PDF VIEWER ENGINE (High-DPI PDF.js Canvas Renderer with Fallback) ---
+  function createCleanPdfViewer(opts) {
+    const canvasContainerId = opts.canvasContainerId;
+    const iframeViewerId = opts.iframeViewerId;
+    const badgeId = opts.badgeId;
 
-  function initCleanPdfViewer(pdfUrl) {
-    if (!pdfUrl) return;
-    currentLoadedPdf = pdfUrl;
+    let currentLoadedPdf = null;
+    let cachedPdfDoc = null;
+    let activeRenderTasks = [];
+    let pdfRenderSeqId = 0;
+    let isPdfRendering = false;
+    let pdfResizeTimer = null;
+    let pdfContainerObserver = null;
+    let lastRenderedWidth = 0;
+    let lastRenderedDpr = 0;
+    let dprMediaQuery = null;
 
-    const canvasContainer = document.getElementById('pdfCanvasPages');
-    const iframeViewer = document.getElementById('listeningPdfViewer');
-    const badge = document.getElementById('pdfViewerBadge');
-    if (!canvasContainer) return;
+    function cancelActivePdfRenderTasks() {
+      if (activeRenderTasks && activeRenderTasks.length > 0) {
+        activeRenderTasks.forEach(function (task) {
+          try {
+            if (task && typeof task.cancel === 'function') {
+              task.cancel();
+            }
+          } catch (e) {
+            // Ignore already completed or cancelled task
+          }
+        });
+        activeRenderTasks = [];
+      }
+    }
+
+    function renderCleanPdfPages(pdfDoc, canvasContainer, badge, seqId) {
+      if (!pdfDoc || !canvasContainer || seqId !== pdfRenderSeqId) return;
+
+      cancelActivePdfRenderTasks();
+      canvasContainer.innerHTML = '';
+
+      const totalPages = pdfDoc.numPages;
+      if (badge) {
+        badge.innerHTML = '<i class="fa-solid fa-file-lines"></i> ' + totalPages + ' Pages (Full Preview)';
+      }
+
+      // Measure container available width
+      let containerWidth = canvasContainer.clientWidth;
+      if (!containerWidth || containerWidth < 100) {
+        const parent = canvasContainer.parentElement;
+        containerWidth = (parent && parent.clientWidth) ? parent.clientWidth : Math.min(window.innerWidth * 0.58, 900);
+      }
+
+      // Account for padding (12px * 2 = 24px) plus 8px safety breathing space
+      const targetWidth = Math.max(containerWidth - 32, 360);
+
+      // Use ACTUAL devicePixelRatio (e.g. 1.0, 1.25, 1.5, 2.0) without artificial floor that causes fractional blur
+      const dpr = Math.min(window.devicePixelRatio || 1, 3);
+      lastRenderedWidth = containerWidth;
+      lastRenderedDpr = dpr;
+
+      isPdfRendering = true;
+
+      function renderPageSeq(pageNum) {
+        if (seqId !== pdfRenderSeqId || pageNum > totalPages) {
+          if (seqId === pdfRenderSeqId) {
+            isPdfRendering = false;
+          }
+          return;
+        }
+
+        pdfDoc.getPage(pageNum).then(function (page) {
+          if (seqId !== pdfRenderSeqId) return;
+
+          const unscaledViewport = page.getViewport({ scale: 1 });
+          const baseScale = targetWidth / unscaledViewport.width;
+          // Standard logical viewport in CSS pixels
+          const viewport = page.getViewport({ scale: baseScale });
+
+          const pageWrap = document.createElement('div');
+          pageWrap.className = 'pdf-page-sheet';
+          pageWrap.style.margin = '0 auto 18px auto';
+          pageWrap.style.width = Math.floor(viewport.width) + 'px';
+          pageWrap.style.height = Math.floor(viewport.height) + 'px';
+          pageWrap.style.background = '#ffffff';
+          pageWrap.style.borderRadius = '6px';
+          pageWrap.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.45)';
+          pageWrap.style.overflow = 'hidden';
+          pageWrap.style.display = 'flex';
+          pageWrap.style.justifyContent = 'center';
+          pageWrap.style.alignItems = 'center';
+          pageWrap.style.boxSizing = 'border-box';
+
+          const canvas = document.createElement('canvas');
+          // Backing store resolution multiplied by actual DPR for pixel-perfect sharpness
+          canvas.width = Math.floor(viewport.width * dpr);
+          canvas.height = Math.floor(viewport.height * dpr);
+          // Display size matches logical viewport in CSS pixels exactly (1:1 aspect ratio)
+          canvas.style.width = Math.floor(viewport.width) + 'px';
+          canvas.style.height = Math.floor(viewport.height) + 'px';
+          canvas.style.display = 'block';
+          canvas.style.maxWidth = '100%';
+          canvas.style.boxSizing = 'border-box';
+
+          const ctx = canvas.getContext('2d', { alpha: false });
+          if (ctx) {
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+          }
+
+          // PDF.js HiDPI transform matrix: scales drawing operations directly to canvas resolution
+          const transform = dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null;
+
+          const renderCtx = {
+            canvasContext: ctx,
+            viewport: viewport,
+            transform: transform
+          };
+
+          const renderTask = page.render(renderCtx);
+          activeRenderTasks.push(renderTask);
+
+          renderTask.promise.then(function () {
+            if (seqId !== pdfRenderSeqId) return;
+            pageWrap.appendChild(canvas);
+            canvasContainer.appendChild(pageWrap);
+            renderPageSeq(pageNum + 1);
+          }).catch(function (pageErr) {
+            if (pageErr && pageErr.name === 'RenderingCancelledException') {
+              return; // Cleanly ignore cancellation
+            }
+            console.warn('Page ' + pageNum + ' render error:', pageErr);
+            if (seqId === pdfRenderSeqId) {
+              renderPageSeq(pageNum + 1);
+            }
+          });
+        }).catch(function (pageErr) {
+          console.warn('Page ' + pageNum + ' load error:', pageErr);
+          if (seqId === pdfRenderSeqId) {
+            renderPageSeq(pageNum + 1);
+          }
+        });
+      }
+
+      renderPageSeq(1);
+    }
 
     function fallbackToIframe(url) {
+      cancelActivePdfRenderTasks();
+      isPdfRendering = false;
+      const canvasContainer = document.getElementById(canvasContainerId);
+      const iframeViewer = document.getElementById(iframeViewerId);
+      const badge = document.getElementById(badgeId);
+
       if (canvasContainer) canvasContainer.style.display = 'none';
       if (iframeViewer) {
         iframeViewer.style.display = 'block';
@@ -215,107 +352,156 @@
       }
     }
 
-    // Try PDF.js for clean toolbar-free, sidebar-free rendering
-    if (window.pdfjsLib) {
-      try {
-        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    function init(pdfUrl) {
+      if (!pdfUrl) return;
+      const isNewPdf = (currentLoadedPdf !== pdfUrl || !cachedPdfDoc);
+      currentLoadedPdf = pdfUrl;
 
-        // Loading spinner
-        canvasContainer.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:240px;color:var(--text-muted);gap:14px;"><i class="fa-solid fa-circle-notch fa-spin" style="font-size:2rem;color:var(--accent-primary);"></i><span style="font-size:0.9rem;">Memuat Question Paper (Clean Preview Mode)...</span></div>';
-        canvasContainer.style.display = 'block';
-        if (iframeViewer) iframeViewer.style.display = 'none';
+      const canvasContainer = document.getElementById(canvasContainerId);
+      const iframeViewer = document.getElementById(iframeViewerId);
+      const badge = document.getElementById(badgeId);
+      if (!canvasContainer) return;
 
-        const loadingTask = window.pdfjsLib.getDocument({
-          url: pdfUrl,
-          cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
-          cMapPacked: true
-        });
+      // Try PDF.js for clean toolbar-free, sidebar-free rendering
+      if (window.pdfjsLib) {
+        try {
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-        isPdfRendering = true;
-        loadingTask.promise.then(function (pdfDoc) {
-          isPdfRendering = false;
-          canvasContainer.innerHTML = '';
-          const totalPages = pdfDoc.numPages;
+          canvasContainer.style.display = 'block';
+          if (iframeViewer) iframeViewer.style.display = 'none';
 
-          if (badge) {
-            badge.innerHTML = '<i class="fa-solid fa-file-lines"></i> ' + totalPages + ' Pages (Full Preview)';
+          pdfRenderSeqId++;
+          const thisSeqId = pdfRenderSeqId;
+
+          // If we already loaded this document, re-render immediately without re-fetching over network
+          if (!isNewPdf && cachedPdfDoc) {
+            renderCleanPdfPages(cachedPdfDoc, canvasContainer, badge, thisSeqId);
+            setupWatchers();
+            return;
           }
 
-          function renderPageSeq(pageNum) {
-            if (pageNum > totalPages) return;
-            pdfDoc.getPage(pageNum).then(function (page) {
-              const containerWidth = canvasContainer.clientWidth || 800;
-              const unscaledViewport = page.getViewport({ scale: 1 });
-              // Leave 28px padding on sides
-              const targetWidth = Math.max(containerWidth - 28, 560);
-              const scale = targetWidth / unscaledViewport.width;
-              // High-DPI multiplier for tack-sharp text rendering
-              const dpr = Math.max(window.devicePixelRatio || 1, 1.5);
-              const viewport = page.getViewport({ scale: scale * dpr });
+          // Show loading spinner for initial document load
+          canvasContainer.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:240px;color:var(--text-muted);gap:14px;"><i class="fa-solid fa-circle-notch fa-spin" style="font-size:2rem;color:var(--accent-primary);"></i><span style="font-size:0.9rem;">Memuat Question Paper (Clean Preview Mode)...</span></div>';
 
-              const pageWrap = document.createElement('div');
-              pageWrap.className = 'pdf-page-sheet';
-              pageWrap.style.margin = '0 auto 18px auto';
-              pageWrap.style.maxWidth = targetWidth + 'px';
-              pageWrap.style.background = '#ffffff';
-              pageWrap.style.borderRadius = '6px';
-              pageWrap.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.45)';
-              pageWrap.style.overflow = 'hidden';
-              pageWrap.style.display = 'flex';
-              pageWrap.style.justifyContent = 'center';
+          const loadingTask = window.pdfjsLib.getDocument({
+            url: pdfUrl,
+            cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+            cMapPacked: true
+          });
 
-              const canvas = document.createElement('canvas');
-              canvas.width = Math.floor(viewport.width);
-              canvas.height = Math.floor(viewport.height);
-              canvas.style.width = Math.floor(viewport.width / dpr) + 'px';
-              canvas.style.height = Math.floor(viewport.height / dpr) + 'px';
-              canvas.style.display = 'block';
-
-              const ctx = canvas.getContext('2d');
-              const renderCtx = {
-                canvasContext: ctx,
-                viewport: viewport
-              };
-
-              page.render(renderCtx).promise.then(function () {
-                pageWrap.appendChild(canvas);
-                canvasContainer.appendChild(pageWrap);
-                renderPageSeq(pageNum + 1);
-              });
-            }).catch(function (pageErr) {
-              console.warn('Page ' + pageNum + ' render error:', pageErr);
-              renderPageSeq(pageNum + 1);
-            });
-          }
-
-          renderPageSeq(1);
-        }).catch(function (err) {
-          isPdfRendering = false;
-          console.warn('PDF.js loading failed, switching to clean iframe viewer:', err);
+          loadingTask.promise.then(function (pdfDoc) {
+            cachedPdfDoc = pdfDoc;
+            renderCleanPdfPages(pdfDoc, canvasContainer, badge, thisSeqId);
+            setupWatchers();
+          }).catch(function (err) {
+            console.warn('PDF.js loading failed, switching to clean iframe viewer:', err);
+            fallbackToIframe(pdfUrl);
+          });
+        } catch (e) {
+          console.warn('PDF.js execution error, switching to clean iframe viewer:', e);
           fallbackToIframe(pdfUrl);
-        });
-      } catch (e) {
-        isPdfRendering = false;
-        console.warn('PDF.js execution error, switching to clean iframe viewer:', e);
+        }
+      } else {
         fallbackToIframe(pdfUrl);
       }
-    } else {
-      fallbackToIframe(pdfUrl);
     }
+
+    function triggerPdfRerender() {
+      const canvasContainer = document.getElementById(canvasContainerId);
+      if (!currentLoadedPdf || !canvasContainer || canvasContainer.style.display === 'none') return;
+      const currentDpr = Math.min(window.devicePixelRatio || 1, 3);
+      const currentWidth = canvasContainer.clientWidth;
+      // Check if re-render is truly needed
+      const widthDiff = Math.abs(currentWidth - lastRenderedWidth);
+      const dprDiff = Math.abs(currentDpr - lastRenderedDpr);
+      if (widthDiff > 6 || dprDiff > 0.02) {
+        if (cachedPdfDoc) {
+          pdfRenderSeqId++;
+          const badge = document.getElementById(badgeId);
+          renderCleanPdfPages(cachedPdfDoc, canvasContainer, badge, pdfRenderSeqId);
+        } else {
+          init(currentLoadedPdf);
+        }
+      }
+    }
+
+    function onDprChangeHandler() {
+      clearTimeout(pdfResizeTimer);
+      pdfResizeTimer = setTimeout(function () {
+        triggerPdfRerender();
+        try {
+          if (dprMediaQuery && dprMediaQuery.removeEventListener) {
+            dprMediaQuery.removeEventListener('change', onDprChangeHandler);
+          }
+          dprMediaQuery = window.matchMedia('(resolution: ' + (window.devicePixelRatio || 1) + 'dppx)');
+          if (dprMediaQuery.addEventListener) {
+            dprMediaQuery.addEventListener('change', onDprChangeHandler);
+          }
+        } catch (e) {}
+      }, 150);
+    }
+
+    function setupWatchers() {
+      const canvasContainer = document.getElementById(canvasContainerId);
+      if (!canvasContainer) return;
+
+      if (typeof ResizeObserver !== 'undefined' && !pdfContainerObserver) {
+        pdfContainerObserver = new ResizeObserver(function (entries) {
+          for (let i = 0; i < entries.length; i++) {
+            const w = Math.round(entries[i].contentRect.width);
+            if (w > 0 && Math.abs(w - lastRenderedWidth) > 6) {
+              clearTimeout(pdfResizeTimer);
+              pdfResizeTimer = setTimeout(triggerPdfRerender, 180);
+            }
+          }
+        });
+        pdfContainerObserver.observe(canvasContainer);
+      }
+
+      try {
+        if (dprMediaQuery) {
+          dprMediaQuery.removeEventListener('change', onDprChangeHandler);
+        }
+      } catch (e) {}
+
+      try {
+        dprMediaQuery = window.matchMedia('(resolution: ' + (window.devicePixelRatio || 1) + 'dppx)');
+        if (dprMediaQuery.addEventListener) {
+          dprMediaQuery.addEventListener('change', onDprChangeHandler);
+        } else if (dprMediaQuery.addListener) {
+          dprMediaQuery.addListener(onDprChangeHandler);
+        }
+      } catch (e) {}
+    }
+
+    window.addEventListener('resize', function () {
+      clearTimeout(pdfResizeTimer);
+      pdfResizeTimer = setTimeout(triggerPdfRerender, 200);
+    });
+
+    return {
+      init: init,
+      triggerRerender: triggerPdfRerender
+    };
   }
 
-  // Handle responsive window resize for PDF viewer
-  let pdfResizeTimer = null;
-  window.addEventListener('resize', function () {
-    clearTimeout(pdfResizeTimer);
-    pdfResizeTimer = setTimeout(function () {
-      const canvasContainer = document.getElementById('pdfCanvasPages');
-      if (currentLoadedPdf && canvasContainer && canvasContainer.style.display !== 'none' && !isPdfRendering) {
-        initCleanPdfViewer(currentLoadedPdf);
-      }
-    }, 300);
+  const listeningPdfViewer = createCleanPdfViewer({
+    canvasContainerId: 'pdfCanvasPages',
+    iframeViewerId: 'listeningPdfViewer',
+    badgeId: 'pdfViewerBadge'
   });
+
+  const readingPdfViewer = createCleanPdfViewer({
+    canvasContainerId: 'readingPdfCanvasPages',
+    iframeViewerId: 'readingPdfViewer',
+    badgeId: 'readingPdfViewerBadge'
+  });
+
+  // Backward-compatible global PDF viewer initializer for listening
+  function initCleanPdfViewer(pdfUrl) {
+    listeningPdfViewer.init(pdfUrl);
+  }
 
   // Render 40 Listening questions dynamically based on batch
   function renderDynamicListeningQuestions(batchId) {
@@ -445,13 +631,54 @@
     }
   }
 
-  // Render 3 Reading Passages and 40 Reading Questions dynamically
+  // Render Reading content dynamically based on batch
   function renderDynamicReadingContent(batchId) {
     const passageContainer = document.getElementById('readingPassageContainer');
     const questionsContainer = document.getElementById('readingQuestionsContainer');
-    if (!passageContainer || !questionsContainer) return;
+    const pdfContainer = document.getElementById('readingPdfContainer');
+    const readingHeaderBatchLabel = document.getElementById('readingHeaderBatchLabel');
+    const readingBannerSubtitle = document.getElementById('readingBannerSubtitle');
+
+    if (readingHeaderBatchLabel) {
+      readingHeaderBatchLabel.textContent = 'Batch ' + batchId;
+    }
 
     const batch = window.IeltsPracticeConfig ? window.IeltsPracticeConfig.getBatch(batchId) : null;
+    if (!batch) return;
+
+    const hasReadingPdf = Boolean(batch.readingPdfUrl);
+
+    if (hasReadingPdf) {
+      if (readingBannerSubtitle) {
+        readingBannerSubtitle.textContent = 'Academic Reading — 3 Passages, 40 Questions (60 Minutes)';
+      }
+      // PDF-First Reading: Hide old template passage and questions containers completely
+      if (passageContainer) {
+        passageContainer.innerHTML = '';
+        passageContainer.style.display = 'none';
+      }
+      if (questionsContainer) {
+        questionsContainer.innerHTML = '';
+        questionsContainer.style.display = 'none';
+      }
+      if (pdfContainer) {
+        pdfContainer.style.display = '';
+        readingPdfViewer.init(batch.readingPdfUrl);
+      }
+      return;
+    }
+
+    // Fallback: If no PDF is configured, hide PDF container and render old HTML template
+    if (pdfContainer) {
+      pdfContainer.style.display = 'none';
+    }
+    if (passageContainer) {
+      passageContainer.style.display = '';
+    }
+    if (questionsContainer) {
+      questionsContainer.style.display = '';
+    }
+
     if (!batch || !batch.readingPassages) return;
 
     // 1. Render Reading Passages with Tabs
@@ -637,23 +864,15 @@
         unanswered++;
         details[qKey] = { status: 'unanswered', userAns: rawUserAns, key: null };
       } else {
-        // Capitalization rule: accept exactly 3 forms —
-        // 1. Original answer form (as written in Answer Key)
-        // 2. All-lowercase form
-        // 3. All-UPPERCASE form
-        // Any other mixed case differing from these 3 forms is rejected.
+        // Case-insensitive and whitespace-normalized scoring for IELTS
         const acceptableItems = Array.isArray(acceptable) ? acceptable : [acceptable];
-        const acceptableList = [];
-        acceptableItems.forEach(function (a) {
-          var s = String(a).trim().replace(/\s+/g, ' ');
-          if (acceptableList.indexOf(s) === -1) acceptableList.push(s);
-          var sLower = s.toLowerCase();
-          if (acceptableList.indexOf(sLower) === -1) acceptableList.push(sLower);
-          var sUpper = s.toUpperCase();
-          if (acceptableList.indexOf(sUpper) === -1) acceptableList.push(sUpper);
+        const cleanUserAnsLower = cleanUserAns.toLowerCase();
+        const isMatch = acceptableItems.some(function (a) {
+          const s = String(a).trim().replace(/\s+/g, ' ').toLowerCase();
+          return cleanUserAnsLower === s;
         });
 
-        if (acceptableList.indexOf(cleanUserAns) !== -1) {
+        if (isMatch) {
           correct++;
           details[qKey] = { status: 'correct', userAns: rawUserAns, key: acceptable };
         } else {
@@ -1134,10 +1353,11 @@
     if (readingStatus === 'submitted') {
       lockReadingSection();
       const savedResult = Storage.get('reading', 'result', null);
-      if (savedResult) {
+      if (savedResult && savedResult.isConfigured) {
         renderScoringResults('reading', 'readingResultsArea', savedResult);
       } else {
         const evaluated = evaluateSkill('reading', readingAnswers);
+        Storage.set('reading', 'result', evaluated);
         renderScoringResults('reading', 'readingResultsArea', evaluated);
       }
     }

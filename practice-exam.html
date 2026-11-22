@@ -232,8 +232,8 @@
               <h2 class="banner-title" id="banner-reading">SECTION 2: READING</h2>
               <span class="status-badge active" id="readingStatusBadge"><i class="fa-solid fa-circle-check"></i> Ready</span>
             </div>
-            <p class="banner-subtitle">
-              [Reading Passages 1 to 3 &amp; Question Materials Placeholder — 40 Questions]
+            <p class="banner-subtitle" id="readingBannerSubtitle">
+              Academic Reading — 3 Passages, 40 Questions (60 Minutes)
             </p>
           </div>
         </div>
@@ -257,23 +257,38 @@
       <!-- Two-Column Exam Grid (60% Left / 40% Right) -->
       <div class="exam-two-col">
         
-        <!-- Left Column: Empty Passage Display & Questions 1–10 (~60%) -->
-        <div class="exam-col-material">
-          <div class="col-header">
+        <!-- Left Column: Reading Question Paper (PDF Viewer) (~60%) -->
+        <div class="exam-col-material" style="padding: 0; overflow: hidden; display: flex; flex-direction: column;">
+          <div class="col-header" style="padding: 14px 20px; margin: 0; flex-shrink: 0;">
             <span class="col-header-title">
-              <i class="fa-solid fa-file-lines" style="color: var(--accent-primary);"></i> Reading Passage &amp; Question Prompts
+              <i class="fa-solid fa-file-pdf" style="color: var(--accent-primary);"></i> Question Paper — <span id="readingHeaderBatchLabel">Batch 01</span>
             </span>
-            <span class="col-header-tag">[Material Column ~60%]</span>
+            <span class="col-header-tag" id="readingPdfViewerBadge"><i class="fa-solid fa-file-pdf"></i> PDF Viewer</span>
           </div>
 
-          <!-- Dynamic 3 Reading Passages Container for Active Batch -->
-          <div class="passage-display-area" id="readingPassageContainer">
+          <!-- Dynamic 3 Reading Passages Container for Active Batch (Fallback if no PDF) -->
+          <div class="passage-display-area" id="readingPassageContainer" style="display: none; padding: 16px 20px; flex-shrink: 0;">
             <!-- Rendered dynamically by js/practice-engine.js -->
           </div>
 
-          <!-- Dynamic 40 Questions Container for Active Batch -->
-          <div class="question-items-list" id="readingQuestionsContainer">
+          <!-- Dynamic 40 Questions Container for Active Batch (Fallback if no PDF) -->
+          <div class="question-items-list" id="readingQuestionsContainer" style="display: none; padding: 16px 20px;">
             <!-- Rendered dynamically by js/practice-engine.js -->
+          </div>
+
+          <!-- PDF Viewer Container: Clean PDF.js Canvas + Iframe Fallback -->
+          <div id="readingPdfContainer" style="flex: 1; overflow: hidden; position: relative; background: #090e1a;">
+            <!-- Clean PDF.js rendered pages container (No toolbars, no sidebars, full vertical scroll) -->
+            <div id="readingPdfCanvasPages" class="pdf-clean-viewer" style="display: none;"></div>
+
+            <!-- Fallback Iframe (Clean URL params if PDF.js is unavailable) -->
+            <iframe
+              id="readingPdfViewer"
+              src="assets/data/reading/batch 01/question batch 01.pdf#toolbar=0&navpanes=0&scrollbar=1&view=FitH"
+              style="width: 100%; height: 100%; border: none; display: block;"
+              title="IELTS Reading Batch 01 — Question Paper"
+              allow="fullscreen"
+            ></iframe>
           </div>
         </div>
 

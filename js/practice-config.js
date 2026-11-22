@@ -180,12 +180,63 @@
   // BATCH 01 — Cambridge IELTS 13 Test 1 (C13T1)
   // Listening: Sections 1–4, Q1–40
   // Audio: assets/Audio/Listening/Batch 01/C13T1 -SECTION -N.mp3
-  // Question PDF: assets/data/listening/batch 01/question batch 01 new.pdf
+  // Question PDF (Listening): assets/data/listening/batch 01/question batch 01 new.pdf
   // Cookery image: assets/ielts/batch-01/section-1-cookery-table.jpg
+  // Reading: Passages 1–3, Q1–40
+  // Question PDF (Reading): assets/data/reading/batch 01/question batch 01.pdf
+  // Answer Key (Reading): assets/data/reading/batch 01/key answer batch 01.pdf
   // =========================================================
 
-  // --- Batch 01: Question PDF (PDF-Based Practice Engine) ---
+  // --- Batch 01: Listening Question PDF (PDF-Based Practice Engine) ---
   BATCHES_CONFIG['01'].questionPdfUrl = 'assets/data/listening/batch 01/question batch 01 new.pdf';
+
+  // --- Batch 01: Reading Question PDF (PDF-Based Practice Engine) ---
+  BATCHES_CONFIG['01'].readingPdfUrl = 'assets/data/reading/batch 01/question batch 01.pdf';
+  BATCHES_CONFIG['01'].readingMode = 'academic';
+
+  // --- Batch 01: Reading Answer Keys (Cambridge IELTS 13 Test 1 Academic Reading) ---
+  BATCHES_CONFIG['01'].readingAnswerKeys = {
+    '1':  'update',
+    '2':  'environment',
+    '3':  'captain',
+    '4':  'films',
+    '5':  'season',
+    '6':  'accommodation',
+    '7':  'blog',
+    '8':  'FALSE',
+    '9':  'NOT GIVEN',
+    '10': 'FALSE',
+    '11': 'TRUE',
+    '12': 'NOT GIVEN',
+    '13': 'TRUE',
+    '14': ['iv', 'IV'],
+    '15': ['vi', 'VI'],
+    '16': ['i', 'I'],
+    '17': ['v', 'V'],
+    '18': ['viii', 'VIII'],
+    '19': ['iii', 'III'],
+    '20': 'E',
+    '21': 'B',
+    '22': 'D',
+    '23': 'A',
+    '24': 'focus',
+    '25': 'pleasure',
+    '26': 'curiosity',
+    '27': 'B',
+    '28': 'C',
+    '29': 'C',
+    '30': 'D',
+    '31': 'A',
+    '32': 'D',
+    '33': 'A',
+    '34': 'E',
+    '35': 'C',
+    '36': 'G',
+    '37': 'B',
+    '38': 'YES',
+    '39': 'NOT GIVEN',
+    '40': 'NO'
+  };
 
   // --- Batch 01: Listening Answer Keys ---
   BATCHES_CONFIG['01'].listeningAnswerKeys = {
