@@ -368,13 +368,13 @@
               <h2 class="banner-title" id="banner-writing">SECTION 3: WRITING</h2>
               <span class="status-badge active" id="writingStatusBadge"><i class="fa-solid fa-circle-check"></i> Ready</span>
             </div>
-            <p class="banner-subtitle">
-              [Writing Task 1 &amp; Task 2 Prompts &amp; Response Editors — Shared 60 Min]
+            <p class="banner-subtitle" id="writingBannerSubtitle">
+              Academic Writing — Task 1 &amp; Task 2 (Shared 60 Minutes)
             </p>
           </div>
         </div>
 
-        <!-- Shared Timer & Actions -->
+        <!-- Shared Timer -->
         <div class="section-actions">
           <div class="exam-timer-box" aria-label="Writing Countdown Timer">
             <i class="fa-regular fa-clock"></i>
@@ -382,84 +382,30 @@
             <span class="timer-note">Shared 60 Min</span>
           </div>
           <button type="button" class="btn btn-primary btn-sm" id="btnStartWriting">
-            <i class="fa-solid fa-play"></i> Start Section
-          </button>
-          <button type="button" class="btn btn-outline-gold btn-sm" id="btnSubmitWriting">
-            <i class="fa-solid fa-check-double"></i> Submit Writing
+            <i class="fa-solid fa-play"></i> Start Timer
           </button>
         </div>
       </div>
 
-      <!-- Writing Task 1 Block -->
-      <div class="exam-two-col writing-task-block">
-        <!-- Left: Task 1 Prompt Area (~60%) -->
-        <div class="exam-col-material">
-          <div class="task-header">
-            <i class="fa-solid fa-chart-column"></i> Task 1 (Recommended: 20 Minutes)
-          </div>
-          <div class="prompt-display-area">
-            [Task 1 Prompt &amp; Diagram/Chart Display Area Placeholder — Visual graphic, data table, process chart, or map instructions will be placed here.]
-          </div>
+      <!-- Single Unified Full-Width PDF Viewer Block -->
+      <div class="exam-material-full" style="width: 100%; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border-subtle); background: #090e1a;">
+        <div class="col-header" style="padding: 14px 20px; margin: 0; background: var(--bg-card); border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+          <span class="col-header-title">
+            <i class="fa-solid fa-file-pdf" style="color: var(--accent-primary);"></i> Writing Question Paper (Task 1 &amp; Task 2) — <span id="writingHeaderBatchLabel">Batch 01</span>
+          </span>
+          <span class="col-header-tag"><i class="fa-regular fa-file-lines"></i> Official Question Paper</span>
         </div>
 
-        <!-- Right: Task 1 Editor & Controls (~40%) -->
-        <div class="exam-col-response">
-          <div class="col-header">
-            <span class="col-header-title">
-              <i class="fa-solid fa-file-pen" style="color: var(--accent-primary);"></i> Task 1 Response
-            </span>
-            <span class="col-header-tag">[Min: 150 words]</span>
-          </div>
-
-          <textarea class="exam-textarea" id="writingTask1Text" placeholder="[Type Task 1 response here...]" aria-label="Task 1 Response Editor"></textarea>
-
-          <div class="editor-toolbar">
-            <div class="word-counter-badge">
-              <i class="fa-solid fa-i-cursor"></i> Word count: <strong id="task1WordCount">0</strong> words (Min: 150 words)
-            </div>
-            <button type="button" class="btn btn-secondary btn-sm" id="btnCopyTask1" aria-label="Copy Task 1 Answer">
-              <i class="fa-regular fa-copy"></i> Copy Answer
-            </button>
-          </div>
+        <div id="writingPdfContainer" style="width: 100%; height: 820px; position: relative; background: #090e1a;">
+          <iframe
+            id="writingPdfViewer"
+            src="assets/data/writing/batch 01/batch 01.pdf#toolbar=0&amp;navpanes=0&amp;scrollbar=1&amp;view=FitH"
+            style="width: 100%; height: 100%; border: none; display: block;"
+            title="IELTS Writing — Question Paper"
+            allow="fullscreen"
+          ></iframe>
         </div>
       </div>
-
-      <!-- Writing Task 2 Block -->
-      <div class="exam-two-col">
-        <!-- Left: Task 2 Prompt Area (~60%) -->
-        <div class="exam-col-material">
-          <div class="task-header">
-            <i class="fa-solid fa-align-left"></i> Task 2 (Recommended: 40 Minutes)
-          </div>
-          <div class="prompt-display-area">
-            [Task 2 Essay Prompt Display Area Placeholder — Discussion question, opinion statement, problem-solution topic, and instructions will be placed here.]
-          </div>
-        </div>
-
-        <!-- Right: Task 2 Editor & Controls (~40%) -->
-        <div class="exam-col-response">
-          <div class="col-header">
-            <span class="col-header-title">
-              <i class="fa-solid fa-file-pen" style="color: var(--accent-primary);"></i> Task 2 Response
-            </span>
-            <span class="col-header-tag">[Min: 250 words]</span>
-          </div>
-
-          <textarea class="exam-textarea" id="writingTask2Text" placeholder="[Type Task 2 response here...]" aria-label="Task 2 Response Editor"></textarea>
-
-          <div class="editor-toolbar">
-            <div class="word-counter-badge">
-              <i class="fa-solid fa-i-cursor"></i> Word count: <strong id="task2WordCount">0</strong> words (Min: 250 words)
-            </div>
-            <button type="button" class="btn btn-secondary btn-sm" id="btnCopyTask2" aria-label="Copy Task 2 Answer">
-              <i class="fa-regular fa-copy"></i> Copy Answer
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Section Results Container (Displayed below on submission) -->
-      <div class="exam-results-container" id="writingResultsArea"></div>
     </section>
 
     <!-- ==========================================
@@ -478,8 +424,8 @@
               <h2 class="banner-title" id="banner-speaking">SECTION 4: SPEAKING</h2>
               <span class="status-badge active" id="speakingStatusBadge"><i class="fa-solid fa-circle-check"></i> Ready</span>
             </div>
-            <p class="banner-subtitle">
-              [Speaking Part 1, Part 2, and Part 3 Questions &amp; Notes Area — No Timer]
+            <p class="banner-subtitle" id="speakingBannerSubtitle">
+              Speaking — Parts 1, 2 &amp; 3 (Examiner-Guided)
             </p>
           </div>
         </div>
@@ -488,79 +434,30 @@
         <div class="section-actions">
           <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
             <i class="fa-solid fa-user-clock"></i>
-            <span>Examiner-Guided (No Timer)</span>
+            <span>Examiner-Guided (11–14 Mins)</span>
           </div>
-          <button type="button" class="btn btn-outline-gold btn-sm" id="btnSubmitSpeaking">
-            <i class="fa-solid fa-check-double"></i> Submit Speaking
-          </button>
         </div>
       </div>
 
-      <!-- Two-Column Exam Grid (60% Left / 40% Right) -->
-      <div class="exam-two-col">
-        
-        <!-- Left Column: Parts 1, 2, and 3 Question Display Areas (~60%) -->
-        <div class="exam-col-material">
-          <div class="col-header">
-            <span class="col-header-title">
-              <i class="fa-solid fa-clipboard-question" style="color: var(--accent-primary);"></i> Speaking Parts 1, 2 &amp; 3 Prompts
-            </span>
-            <span class="col-header-tag">[Material Column ~60%]</span>
-          </div>
-
-          <!-- Part 1 Block -->
-          <div class="speaking-part-block">
-            <div class="part-header">
-              <i class="fa-regular fa-circle-dot"></i> Part 1: Introduction &amp; Interview
-            </div>
-            <div class="speaking-prompt-placeholder">
-              [Empty Part 1 Questions Display Area — Familiar topics and introductory questions will be displayed here.]
-            </div>
-          </div>
-
-          <!-- Part 2 Block -->
-          <div class="speaking-part-block">
-            <div class="part-header">
-              <i class="fa-regular fa-circle-dot"></i> Part 2: Individual Long Turn (Cue Card)
-            </div>
-            <div class="speaking-prompt-placeholder">
-              [Empty Part 2 Cue Card Display Area — Topic card, preparation points, and candidate speaking prompts will be displayed here.]
-            </div>
-          </div>
-
-          <!-- Part 3 Block -->
-          <div class="speaking-part-block">
-            <div class="part-header">
-              <i class="fa-regular fa-circle-dot"></i> Part 3: Two-way Discussion
-            </div>
-            <div class="speaking-prompt-placeholder">
-              [Empty Part 3 Discussion Prompts Display Area — In-depth abstract questions and discussion topics will be displayed here.]
-            </div>
-          </div>
+      <!-- Single Unified Full-Width PDF Viewer Block -->
+      <div class="exam-material-full" style="width: 100%; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border-subtle); background: #090e1a;">
+        <div class="col-header" style="padding: 14px 20px; margin: 0; background: var(--bg-card); border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+          <span class="col-header-title">
+            <i class="fa-solid fa-file-pdf" style="color: var(--accent-primary);"></i> Speaking Question Paper (Parts 1, 2 &amp; 3) — <span id="speakingHeaderBatchLabel">Batch 01</span>
+          </span>
+          <span class="col-header-tag"><i class="fa-regular fa-file-lines"></i> Official Question Paper</span>
         </div>
 
-        <!-- Right Column: Candidate Notes Area (~40%) -->
-        <div class="exam-col-response">
-          <div class="col-header">
-            <span class="col-header-title">
-              <i class="fa-regular fa-note-sticky" style="color: var(--accent-primary);"></i> Candidate Notes Area
-            </span>
-            <span class="col-header-tag">[Response Column ~40%]</span>
-          </div>
-
-          <div class="notes-area-container">
-            <textarea class="exam-textarea" id="speakingNotesText" style="min-height: 260px;" placeholder="[Take candidate notes here during preparation or practice simulation...]" aria-label="Candidate Notes Area"></textarea>
-            <div class="support-40-notice" style="margin-top: 0;">
-              <i class="fa-solid fa-circle-info"></i>
-              <span>[Notes are for candidate preparation only and will not be assessed in the test score.]</span>
-            </div>
-          </div>
+        <div id="speakingPdfContainer" style="width: 100%; height: 820px; position: relative; background: #090e1a;">
+          <iframe
+            id="speakingPdfViewer"
+            src="assets/data/speaking/batch 01/batch 01.pdf#toolbar=0&amp;navpanes=0&amp;scrollbar=1&amp;view=FitH"
+            style="width: 100%; height: 100%; border: none; display: block;"
+            title="IELTS Speaking — Question Paper"
+            allow="fullscreen"
+          ></iframe>
         </div>
-
       </div>
-
-      <!-- Section Results Container (Displayed below on submission) -->
-      <div class="exam-results-container" id="speakingResultsArea"></div>
     </section>
 
   </main>

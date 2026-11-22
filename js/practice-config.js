@@ -156,6 +156,10 @@
       });
     }
 
+    const batchNum = parseInt(id, 10);
+    const writingPdfUrl = (batchNum >= 1 && batchNum <= 4) ? 'assets/data/writing/batch ' + id + '/batch ' + id + '.pdf' : '';
+    const speakingPdfUrl = (batchNum >= 1 && batchNum <= 4) ? 'assets/data/speaking/batch ' + id + '/batch ' + id + '.pdf' : '';
+
     return {
       id: id,
       title: 'Batch ' + id,
@@ -163,6 +167,8 @@
       readingMode: 'academic',        // 'academic' or 'general'
       listeningAnswerKeys: null,     // null = unconfigured; or { "1": "ans", ... }
       readingAnswerKeys: null,       // null = unconfigured; or { "1": "ans", ... }
+      writingPdfUrl: writingPdfUrl,
+      speakingPdfUrl: speakingPdfUrl,
       listeningSections: listeningSections,
       readingPassages: readingPassages
     };
@@ -378,6 +384,10 @@
       sourcePage: 5
     }
   ];
+
+  // --- Batch 01: Writing & Speaking Question PDFs ---
+  BATCHES_CONFIG['01'].writingPdfUrl = 'assets/data/writing/batch 01/batch 01.pdf';
+  BATCHES_CONFIG['01'].speakingPdfUrl = 'assets/data/speaking/batch 01/batch 01.pdf';
 
   // --- 4. REUSABLE CONFIGURATION METHODS ---
   const IeltsPracticeConfig = {

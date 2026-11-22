@@ -750,6 +750,44 @@
     setupQuestionAnswerLinking('reading', 40);
   }
 
+  // --- 5C. DYNAMIC WRITING CONTENT RENDERER (READ-ONLY PRACTICE) ---
+  function renderDynamicWritingContent(batchId) {
+    const writingIframe = document.getElementById('writingPdfViewer');
+    const writingHeaderLabel = document.getElementById('writingHeaderBatchLabel');
+    if (writingHeaderLabel) {
+      writingHeaderLabel.textContent = 'Batch ' + batchId;
+    }
+
+    const batch = window.IeltsPracticeConfig ? window.IeltsPracticeConfig.getBatch(batchId) : null;
+    const pdfUrl = (batch && batch.writingPdfUrl) ? batch.writingPdfUrl : 'assets/data/writing/batch ' + batchId + '/batch ' + batchId + '.pdf';
+
+    if (writingIframe && pdfUrl) {
+      const cleanUrl = pdfUrl + (pdfUrl.indexOf('#') === -1 ? '#toolbar=0&navpanes=0&scrollbar=1&view=FitH' : '');
+      if (writingIframe.getAttribute('src') !== cleanUrl) {
+        writingIframe.src = cleanUrl;
+      }
+    }
+  }
+
+  // --- 5D. DYNAMIC SPEAKING CONTENT RENDERER (READ-ONLY PRACTICE) ---
+  function renderDynamicSpeakingContent(batchId) {
+    const speakingIframe = document.getElementById('speakingPdfViewer');
+    const speakingHeaderLabel = document.getElementById('speakingHeaderBatchLabel');
+    if (speakingHeaderLabel) {
+      speakingHeaderLabel.textContent = 'Batch ' + batchId;
+    }
+
+    const batch = window.IeltsPracticeConfig ? window.IeltsPracticeConfig.getBatch(batchId) : null;
+    const pdfUrl = (batch && batch.speakingPdfUrl) ? batch.speakingPdfUrl : 'assets/data/speaking/batch ' + batchId + '/batch ' + batchId + '.pdf';
+
+    if (speakingIframe && pdfUrl) {
+      const cleanUrl = pdfUrl + (pdfUrl.indexOf('#') === -1 ? '#toolbar=0&navpanes=0&scrollbar=1&view=FitH' : '');
+      if (speakingIframe.getAttribute('src') !== cleanUrl) {
+        speakingIframe.src = cleanUrl;
+      }
+    }
+  }
+
   // --- 6. TIMER ENGINE ---
   function initSectionTimer(skill, timerElementId, onExpireCallback) {
     const timerElem = document.getElementById(timerElementId);
@@ -1186,9 +1224,11 @@
     // 1. Audio player
     initAudioPlayer();
 
-    // 1B. Dynamic Content Rendering for Active Batch (Tahap A)
+    // 1B. Dynamic Content Rendering for Active Batch
     renderDynamicListeningQuestions(ACTIVE_BATCH);
     renderDynamicReadingContent(ACTIVE_BATCH);
+    renderDynamicWritingContent(ACTIVE_BATCH);
+    renderDynamicSpeakingContent(ACTIVE_BATCH);
 
     // 2. Setup Confirm Modal Cancel buttons
     const cancelModalBtns = document.querySelectorAll('.cancel-confirm-modal');
@@ -1363,82 +1403,15 @@
     }
 
     // -------------------------------------------------------------
-    // WRITING LOGIC
+    // WRITING 60-MINUTE TIMER (READ-ONLY PRACTICE)
     // -------------------------------------------------------------
-    const writingStatus = Storage.get('writing', 'status', 'not_started');
-    const writingAnswers = Storage.get('writing', 'answers', { task1: '', task2: '' });
-
-    const task1Input = document.getElementById('writingTask1Text');
-    const task2Input = document.getElementById('writingTask2Text');
-    const task1Count = document.getElementById('task1WordCount');
-    const task2Count = document.getElementById('task2WordCount');
-
-    if (task1Input) {
-      if (writingAnswers.task1) {
-        task1Input.value = writingAnswers.task1;
-        if (task1Count) task1Count.textContent = countWords(writingAnswers.task1);
-      }
-      task1Input.addEventListener('input', function () {
-        if (Storage.get('writing', 'status', 'not_started') === 'submitted') return;
-        writingAnswers.task1 = task1Input.value;
-        Storage.set('writing', 'answers', writingAnswers);
-        if (task1Count) task1Count.textContent = countWords(task1Input.value);
-      });
-    }
-
-    if (task2Input) {
-      if (writingAnswers.task2) {
-        task2Input.value = writingAnswers.task2;
-        if (task2Count) task2Count.textContent = countWords(writingAnswers.task2);
-      }
-      task2Input.addEventListener('input', function () {
-        if (Storage.get('writing', 'status', 'not_started') === 'submitted') return;
-        writingAnswers.task2 = task2Input.value;
-        Storage.set('writing', 'answers', writingAnswers);
-        if (task2Count) task2Count.textContent = countWords(task2Input.value);
-      });
-    }
-
-    // Copy buttons
-    const btnCopyTask1 = document.getElementById('btnCopyTask1');
-    if (btnCopyTask1 && task1Input) {
-      btnCopyTask1.addEventListener('click', function () {
-        navigator.clipboard.writeText(task1Input.value || '').then(function () {
-          const originalHTML = btnCopyTask1.innerHTML;
-          btnCopyTask1.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
-          setTimeout(function () { btnCopyTask1.innerHTML = originalHTML; }, 2000);
-        }).catch(function () {
-          task1Input.select();
-          document.execCommand('copy');
-          alert('Task 1 answer copied to clipboard!');
-        });
-      });
-    }
-
-    const btnCopyTask2 = document.getElementById('btnCopyTask2');
-    if (btnCopyTask2 && task2Input) {
-      btnCopyTask2.addEventListener('click', function () {
-        navigator.clipboard.writeText(task2Input.value || '').then(function () {
-          const originalHTML = btnCopyTask2.innerHTML;
-          btnCopyTask2.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
-          setTimeout(function () { btnCopyTask2.innerHTML = originalHTML; }, 2000);
-        }).catch(function () {
-          task2Input.select();
-          document.execCommand('copy');
-          alert('Task 2 answer copied to clipboard!');
-        });
-      });
-    }
-
-    // Shared Timer setup
     initSectionTimer('writing', 'timerWriting', function () {
       notifyTimeExpired('writing');
     });
 
-    // Start button
     const btnStartWriting = document.getElementById('btnStartWriting');
     if (btnStartWriting) {
-      if (writingStatus === 'in_progress') {
+      if (Storage.get('writing', 'status', 'not_started') === 'in_progress') {
         btnStartWriting.style.display = 'none';
       }
       btnStartWriting.addEventListener('click', function () {
@@ -1447,80 +1420,6 @@
         });
         btnStartWriting.style.display = 'none';
       });
-    }
-
-    // Submit button
-    const btnSubmitWriting = document.getElementById('btnSubmitWriting');
-    if (btnSubmitWriting) {
-      btnSubmitWriting.addEventListener('click', function () {
-        if (Storage.get('writing', 'status', 'not_started') === 'submitted') return;
-        showConfirmModal('writing', function () {
-          // Perform submit
-          Storage.set('writing', 'status', 'submitted');
-          if (activeIntervals.writing) {
-            clearInterval(activeIntervals.writing);
-            delete activeIntervals.writing;
-          }
-          const wordData = {
-            task1Words: countWords(writingAnswers.task1),
-            task2Words: countWords(writingAnswers.task2)
-          };
-          Storage.set('writing', 'result', wordData);
-          lockWritingSection();
-          renderWritingResults('writingResultsArea', wordData);
-        });
-      });
-    }
-
-    // Check if already submitted
-    if (writingStatus === 'submitted') {
-      lockWritingSection();
-      const savedWordData = Storage.get('writing', 'result', {
-        task1Words: countWords(writingAnswers.task1),
-        task2Words: countWords(writingAnswers.task2)
-      });
-      renderWritingResults('writingResultsArea', savedWordData);
-    }
-
-    // -------------------------------------------------------------
-    // SPEAKING LOGIC
-    // -------------------------------------------------------------
-    const speakingStatus = Storage.get('speaking', 'status', 'not_started');
-    const speakingAnswers = Storage.get('speaking', 'answers', { notes: '' });
-    const notesInput = document.getElementById('speakingNotesText');
-
-    if (notesInput) {
-      if (speakingAnswers.notes) {
-        notesInput.value = speakingAnswers.notes;
-      }
-      notesInput.addEventListener('input', function () {
-        if (Storage.get('speaking', 'status', 'not_started') === 'submitted') return;
-        speakingAnswers.notes = notesInput.value;
-        Storage.set('speaking', 'answers', speakingAnswers);
-      });
-    }
-
-    // Submit button
-    const btnSubmitSpeaking = document.getElementById('btnSubmitSpeaking');
-    if (btnSubmitSpeaking) {
-      btnSubmitSpeaking.addEventListener('click', function () {
-        if (Storage.get('speaking', 'status', 'not_started') === 'submitted') return;
-        showConfirmModal('speaking', function () {
-          // Perform submit
-          Storage.set('speaking', 'status', 'submitted');
-          const notesLength = (speakingAnswers.notes || '').length;
-          Storage.set('speaking', 'result', { notesLength: notesLength });
-          lockSpeakingSection();
-          renderSpeakingResults('speakingResultsArea', notesLength);
-        });
-      });
-    }
-
-    // Check if already submitted
-    if (speakingStatus === 'submitted') {
-      lockSpeakingSection();
-      const savedNotesData = Storage.get('speaking', 'result', { notesLength: (speakingAnswers.notes || '').length });
-      renderSpeakingResults('speakingResultsArea', savedNotesData.notesLength);
     }
 
   });
