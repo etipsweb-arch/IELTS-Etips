@@ -54,3 +54,5 @@ build/
 
 # --- Dokumen Internal / Draft Spec (Hapus '#' jika ingin dikecualikan) ---
 # *.docx
+
+*.bak

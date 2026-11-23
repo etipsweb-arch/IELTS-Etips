@@ -157,6 +157,14 @@
     }
 
     const batchNum = parseInt(id, 10);
+    const questionPdfUrl = (batchNum === 1)
+      ? 'assets/data/listening/batch 01/question batch 01 new.pdf'
+      : (batchNum >= 2 && batchNum <= 4)
+      ? 'assets/data/listening/batch ' + id + '/question batch ' + id + '.pdf'
+      : '';
+    const readingPdfUrl = (batchNum >= 1 && batchNum <= 4)
+      ? 'assets/data/reading/batch ' + id + '/question batch ' + id + '.pdf'
+      : '';
     const writingPdfUrl = (batchNum >= 1 && batchNum <= 4) ? 'assets/data/writing/batch ' + id + '/batch ' + id + '.pdf' : '';
     const speakingPdfUrl = (batchNum >= 1 && batchNum <= 4) ? 'assets/data/speaking/batch ' + id + '/batch ' + id + '.pdf' : '';
 
@@ -164,6 +172,8 @@
       id: id,
       title: 'Batch ' + id,
       audioUrl: '',                  // Path/URL to MP3 (e.g., 'assets/audio/batch-01-listening.mp3')
+      questionPdfUrl: questionPdfUrl,
+      readingPdfUrl: readingPdfUrl,
       readingMode: 'academic',        // 'academic' or 'general'
       listeningAnswerKeys: null,     // null = unconfigured; or { "1": "ans", ... }
       readingAnswerKeys: null,       // null = unconfigured; or { "1": "ans", ... }

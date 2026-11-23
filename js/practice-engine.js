@@ -855,7 +855,7 @@
     activeIntervals[skill] = setInterval(tick, 1000);
   }
 
-  // --- 7. ANSWER KEY SCORING FUNCTION ---
+  // --- 7. ANSWER KEY SCORING FUNCTION (UNLIMITED PRACTICE & PRO-RATA SCORING) ---
   function evaluateSkill(skill, userAnswers) {
     const totalQuestions = 40;
     const batchConfig = window.IeltsPracticeConfig ? window.IeltsPracticeConfig.getBatch(ACTIVE_BATCH) : null;
@@ -866,18 +866,19 @@
     // Check if keys are configured
     const keysConfigured = Boolean(answerKeys && typeof answerKeys === 'object' && Object.keys(answerKeys).length > 0);
 
+    // Count non-empty answered questions
+    let rawAnsweredCount = 0;
+    for (let i = 1; i <= totalQuestions; i++) {
+      const val = (userAnswers[String(i)] || '').trim();
+      if (val) rawAnsweredCount++;
+    }
+
     if (!keysConfigured) {
-      // Count answered vs unanswered
-      let answeredCount = 0;
-      for (let i = 1; i <= totalQuestions; i++) {
-        const val = (userAnswers[String(i)] || '').trim();
-        if (val) answeredCount++;
-      }
       return {
         isConfigured: false,
         total: totalQuestions,
-        answeredCount: answeredCount,
-        unansweredCount: totalQuestions - answeredCount,
+        answeredCount: rawAnsweredCount,
+        unansweredCount: totalQuestions - rawAnsweredCount,
         message: 'Kunci jawaban belum dikonfigurasi untuk Batch ' + ACTIVE_BATCH + '. Penilaian otomatis dan konversi band score tidak tersedia.'
       };
     }
@@ -920,22 +921,50 @@
       }
     }
 
-    const readingMode = batchConfig.readingMode || 'academic';
-    const estimatedBand = window.IeltsPracticeConfig.rawToBand(correct, skill, readingMode);
+    const answeredCount = correct + incorrect;
+    const accuracy = answeredCount > 0 ? ((correct / answeredCount) * 100) : 0;
+    const isFull = (answeredCount === totalQuestions);
+    const isPartial = (answeredCount > 0 && answeredCount < totalQuestions);
+
+    const readingMode = (batchConfig && batchConfig.readingMode) ? batchConfig.readingMode : 'academic';
+    let estimatedBand = '1.0';
+    let bandLabel = 'Estimated Band (Full 40 Soal)';
+    let disclaimerText = '';
+
+    if (isFull) {
+      estimatedBand = window.IeltsPracticeConfig.rawToBand(correct, skill, readingMode);
+      bandLabel = 'Estimated Band (Full 40 Soal)';
+      disclaimerText = 'Skor prediksi di atas dihitung menggunakan tabel konversi baku 40 soal resmi IELTS ' + (skill === 'reading' ? '(' + (readingMode === 'general' ? 'General Training' : 'Academic') + ')' : '') + '. Evaluasi simulasi mandiri dan bukan sertifikat resmi IELTS.';
+    } else if (isPartial) {
+      // Pro-rata estimation: scale accuracy to 40 questions to determine equivalent practice band
+      const projectedRaw = Math.round((correct / answeredCount) * 40);
+      estimatedBand = window.IeltsPracticeConfig.rawToBand(projectedRaw, skill, readingMode);
+      bandLabel = 'Estimated Practice Band (Estimasi Latihan)';
+      disclaimerText = 'Estimasi Latihan Mandiri berdasarkan akurasi ' + accuracy.toFixed(1) + '% dari ' + answeredCount + ' soal yang dikerjakan. Bukan skor resmi IELTS 40 soal.';
+    } else {
+      estimatedBand = '1.0';
+      bandLabel = 'Belum Ada Soal Dikerjakan';
+      disclaimerText = 'Tidak ada jawaban yang diisi untuk sesi latihan ini. Silakan kerjakan soal untuk mendapatkan estimasi band score.';
+    }
 
     return {
       isConfigured: true,
+      answeredCount: answeredCount,
       correct: correct,
       incorrect: incorrect,
       unanswered: unanswered,
       total: totalQuestions,
+      accuracy: accuracy,
       estimatedBand: estimatedBand,
+      bandLabel: bandLabel,
+      isPartial: isPartial,
+      disclaimerText: disclaimerText,
       readingMode: readingMode,
       details: details
     };
   }
 
-  // --- 8. RESULTS RENDERING ---
+  // --- 8. RESULTS RENDERING & ANSWER REVIEW ---
   function renderScoringResults(skill, resultContainerId, resultData) {
     const container = document.getElementById(resultContainerId);
     if (!container) return;
@@ -946,18 +975,30 @@
           <div class="results-header">
             <div class="results-title-group">
               <span class="results-badge notice"><i class="fa-solid fa-triangle-exclamation"></i> Kunci Jawaban Belum Dikonfigurasi</span>
-              <h3 class="results-heading">Hasil Ujian — ${skill.toUpperCase()} (Batch ${ACTIVE_BATCH})</h3>
+              <h3 class="results-heading">Hasil Latihan — ${skill.toUpperCase()} (Batch ${ACTIVE_BATCH})</h3>
             </div>
           </div>
           <div class="results-notice-box">
             <p><i class="fa-solid fa-circle-info"></i> ${resultData.message}</p>
             <p style="margin-top: 8px; font-size: 0.825rem; color: var(--text-muted);">
-              Seluruh ${resultData.answeredCount} jawaban yang Anda isi (${resultData.unansweredCount} belum terisi) telah <strong>tersimpan dan terkunci permanen</strong> pada browser Anda.
+              ${resultData.answeredCount} jawaban yang Anda isi (${resultData.unansweredCount} belum terisi) telah tercatat untuk sesi ini.
             </p>
+          </div>
+          <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: flex-end;">
+            <button type="button" class="btn btn-try-again btn-sm" id="btnTryAgain_${skill}">
+              <i class="fa-solid fa-rotate-right"></i> Try Again (Coba Lagi Latihan Ini)
+            </button>
           </div>
         </div>
       `;
       container.style.display = 'block';
+
+      const btnTryAgainUnconf = document.getElementById('btnTryAgain_' + skill);
+      if (btnTryAgainUnconf) {
+        btnTryAgainUnconf.addEventListener('click', function () {
+          resetSkillSession(skill);
+        });
+      }
       return;
     }
 
@@ -965,16 +1006,22 @@
       <div class="exam-results-card scored">
         <div class="results-header">
           <div class="results-title-group">
-            <span class="results-badge success"><i class="fa-solid fa-circle-check"></i> Ujian Selesai &amp; Dinilai</span>
-            <h3 class="results-heading">Hasil Evaluasi — ${skill.toUpperCase()} (Batch ${ACTIVE_BATCH})</h3>
+            <span class="results-badge success">
+              <i class="fa-solid fa-circle-check"></i> ${resultData.isPartial ? 'Latihan Sebagian Selesai &amp; Dinilai' : 'Sesi Selesai &amp; Dinilai Lengkap'}
+            </span>
+            <h3 class="results-heading">Hasil Evaluasi Sesi — ${skill.toUpperCase()} (Batch ${ACTIVE_BATCH})</h3>
           </div>
-          <div class="band-score-pill">
-            <span class="band-score-label">Estimated Band</span>
+          <div class="band-score-pill ${resultData.isPartial ? 'partial-pill' : ''}">
+            <span class="band-score-label">${resultData.bandLabel}</span>
             <span class="band-score-value">${resultData.estimatedBand}</span>
           </div>
         </div>
 
         <div class="results-stats-grid">
+          <div class="stat-card stat-answered">
+            <span class="stat-num">${resultData.answeredCount} / ${resultData.total}</span>
+            <span class="stat-lbl"><i class="fa-solid fa-pen-to-square"></i> Soal Dikerjakan</span>
+          </div>
           <div class="stat-card stat-correct">
             <span class="stat-num">${resultData.correct}</span>
             <span class="stat-lbl"><i class="fa-solid fa-check"></i> Jawaban Benar</span>
@@ -983,22 +1030,86 @@
             <span class="stat-num">${resultData.incorrect}</span>
             <span class="stat-lbl"><i class="fa-solid fa-xmark"></i> Jawaban Salah</span>
           </div>
-          <div class="stat-card stat-unanswered">
-            <span class="stat-num">${resultData.unanswered}</span>
-            <span class="stat-lbl"><i class="fa-solid fa-circle-question"></i> Tidak Dijawab</span>
-          </div>
-          <div class="stat-card stat-total">
-            <span class="stat-num">${resultData.correct} / ${resultData.total}</span>
-            <span class="stat-lbl"><i class="fa-solid fa-list-ol"></i> Total Skor (40 Soal)</span>
+          <div class="stat-card stat-accuracy">
+            <span class="stat-num">${resultData.accuracy.toFixed(1)}%</span>
+            <span class="stat-lbl"><i class="fa-solid fa-chart-pie"></i> Akurasi Pengerjaan</span>
           </div>
         </div>
 
         <div class="results-disclaimer">
-          <strong>Catatan Estimasi Skor:</strong> Skor prediksi di atas dihitung menggunakan tabel konversi baku IELTS ${skill === 'reading' ? '(' + (resultData.readingMode === 'general' ? 'General Training' : 'Academic') + ')' : ''}. Skor ini merupakan hasil evaluasi simulasi latihan mandiri dan bukan sertifikat resmi IELTS.
+          <strong>Catatan Evaluasi:</strong> ${resultData.disclaimerText}
+        </div>
+
+        <!-- Unlimited Practice Actions Bar -->
+        <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-infinity" style="color: var(--accent-primary);"></i>
+            <span><strong>Unlimited Practice:</strong> Tidak ada batas percobaan. Ulangi latihan kapan saja dari awal.</span>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <button type="button" class="btn btn-secondary btn-sm" id="btnScrollTop_${skill}">
+              <i class="fa-solid fa-arrow-up"></i> Review Jawaban
+            </button>
+            <button type="button" class="btn btn-try-again btn-sm" id="btnTryAgain_${skill}">
+              <i class="fa-solid fa-rotate-right"></i> Try Again (Coba Lagi)
+            </button>
+          </div>
         </div>
       </div>
     `;
     container.style.display = 'block';
+
+    // Apply visual correct/incorrect feedback on answer input rows
+    applyAnswerReview(skill, resultData);
+
+    // Attach click listener to Try Again button
+    const btnTryAgain = document.getElementById('btnTryAgain_' + skill);
+    if (btnTryAgain) {
+      btnTryAgain.addEventListener('click', function () {
+        resetSkillSession(skill);
+      });
+    }
+
+    const btnScrollTop = document.getElementById('btnScrollTop_' + skill);
+    if (btnScrollTop) {
+      btnScrollTop.addEventListener('click', function () {
+        const target = document.getElementById(skill + '_ans_1') || document.getElementById('sec-' + skill);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
+  }
+
+  // Visual answer review feedback
+  function applyAnswerReview(skill, resultData) {
+    if (!resultData || !resultData.details) return;
+
+    for (let i = 1; i <= 40; i++) {
+      const qKey = String(i);
+      const detail = resultData.details[qKey];
+      const input = document.getElementById(skill + '_ans_' + i);
+      const row = input ? input.closest('.answer-row') : null;
+
+      if (row && detail) {
+        // Clean any existing hint
+        const oldHint = row.querySelector('.answer-key-hint');
+        if (oldHint) oldHint.remove();
+
+        if (detail.status === 'correct') {
+          row.classList.add('is-correct');
+          row.classList.remove('is-incorrect');
+        } else if (detail.status === 'incorrect') {
+          row.classList.add('is-incorrect');
+          row.classList.remove('is-correct');
+          const keyDisplay = Array.isArray(detail.key) ? detail.key.join(' / ') : String(detail.key || '');
+          const hint = document.createElement('span');
+          hint.className = 'answer-key-hint';
+          hint.innerHTML = '<i class="fa-solid fa-check"></i> Kunci: ' + keyDisplay;
+          row.appendChild(hint);
+        } else {
+          row.classList.remove('is-correct', 'is-incorrect');
+        }
+      }
+    }
   }
 
   function renderWritingResults(containerId, wordData) {
@@ -1010,25 +1121,40 @@
         <div class="results-header">
           <div class="results-title-group">
             <span class="results-badge success"><i class="fa-solid fa-circle-check"></i> Writing Berhasil Dikumpulkan</span>
-            <h3 class="results-heading">Konfirmasi Pengumpulan — WRITING (Batch ${ACTIVE_BATCH})</h3>
+            <h3 class="results-heading">Konfirmasi Sesi — WRITING (Batch ${ACTIVE_BATCH})</h3>
           </div>
         </div>
         <div class="writing-summary-grid">
           <div class="writing-summary-card">
             <h4>Task 1 (Laporan/Grafik)</h4>
-            <p>Jumlah kata: <strong>${wordData.task1Words} kata</strong> (Batas rekomendasi: 150 kata)</p>
+            <p>Status: <strong>Selesai</strong> (Batas rekomendasi: 150 kata)</p>
           </div>
           <div class="writing-summary-card">
             <h4>Task 2 (Esai)</h4>
-            <p>Jumlah kata: <strong>${wordData.task2Words} kata</strong> (Batas rekomendasi: 250 kata)</p>
+            <p>Status: <strong>Selesai</strong> (Batas rekomendasi: 250 kata)</p>
           </div>
         </div>
         <p class="results-note-locked">
-          <i class="fa-solid fa-lock"></i> Esai Task 1 dan Task 2 telah terkunci permanen untuk Batch ${ACTIVE_BATCH}. Evaluasi kriteria IELTS (TR, CC, LR, GRA) dilakukan secara manual oleh instruktur/mentor.
+          <i class="fa-solid fa-shield-halved"></i> Sesi Writing telah dikunci untuk evaluasi. Penilaian kriteria IELTS resmi (Task Response, Coherence &amp; Cohesion, Lexical Resource, Grammatical Range &amp; Accuracy) dilakukan oleh instruktur/tutor.
         </p>
+        <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div style="font-size: 0.8rem; color: var(--text-muted);">
+            <i class="fa-solid fa-infinity" style="color: var(--accent-primary);"></i> Unlimited Practice: Anda dapat mengulang sesi writing kapan saja.
+          </div>
+          <button type="button" class="btn btn-try-again btn-sm" id="btnTryAgain_writing">
+            <i class="fa-solid fa-rotate-right"></i> Try Again (Reset &amp; Latihan Ulang)
+          </button>
+        </div>
       </div>
     `;
     container.style.display = 'block';
+
+    const btnTryAgainWriting = document.getElementById('btnTryAgain_writing');
+    if (btnTryAgainWriting) {
+      btnTryAgainWriting.addEventListener('click', function () {
+        resetSkillSession('writing');
+      });
+    }
   }
 
   function renderSpeakingResults(containerId, notesLength) {
@@ -1039,22 +1165,37 @@
       <div class="exam-results-card submitted-only">
         <div class="results-header">
           <div class="results-title-group">
-            <span class="results-badge success"><i class="fa-solid fa-circle-check"></i> Speaking Berhasil Disimpan</span>
+            <span class="results-badge success"><i class="fa-solid fa-circle-check"></i> Speaking Selesai</span>
             <h3 class="results-heading">Konfirmasi Sesi — SPEAKING (Batch ${ACTIVE_BATCH})</h3>
           </div>
         </div>
         <div class="results-notice-box">
-          <p><i class="fa-solid fa-circle-check"></i> Catatan persiapan speaking Anda (${notesLength} karakter) telah disimpan dan dikunci permanen untuk Batch ${ACTIVE_BATCH}.</p>
+          <p><i class="fa-solid fa-circle-check"></i> Sesi Speaking Parts 1, 2, dan 3 telah selesai dan dikunci untuk Batch ${ACTIVE_BATCH}.</p>
           <p style="margin-top: 8px; font-size: 0.825rem; color: var(--text-muted);">
-            Sesi Speaking Part 1, Part 2, dan Part 3 dievaluasi langsung oleh tutor penilai melalui pertemuan interaktif atau review rekaman.
+            Evaluasi Speaking dilakukan secara langsung berdasarkan kriteria resmi IELTS: Fluency &amp; Coherence, Lexical Resource, Grammatical Range &amp; Accuracy, dan Pronunciation.
           </p>
+        </div>
+        <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div style="font-size: 0.8rem; color: var(--text-muted);">
+            <i class="fa-solid fa-infinity" style="color: var(--accent-primary);"></i> Unlimited Practice: Anda dapat mengulang simulasi speaking kapan saja.
+          </div>
+          <button type="button" class="btn btn-try-again btn-sm" id="btnTryAgain_speaking">
+            <i class="fa-solid fa-rotate-right"></i> Try Again (Mulai Sesi Baru)
+          </button>
         </div>
       </div>
     `;
     container.style.display = 'block';
+
+    const btnTryAgainSpeaking = document.getElementById('btnTryAgain_speaking');
+    if (btnTryAgainSpeaking) {
+      btnTryAgainSpeaking.addEventListener('click', function () {
+        resetSkillSession('speaking');
+      });
+    }
   }
 
-  // --- 9. LOCKING CONTROLS ---
+  // --- 9. LOCKING & RESET CONTROLS ---
   function lockListeningSection() {
     for (let i = 1; i <= 40; i++) {
       const input = document.getElementById('listening_ans_' + i);
@@ -1098,11 +1239,6 @@
   }
 
   function lockWritingSection() {
-    const t1 = document.getElementById('writingTask1Text');
-    const t2 = document.getElementById('writingTask2Text');
-    if (t1) { t1.disabled = true; t1.readOnly = true; t1.classList.add('input-locked'); }
-    if (t2) { t2.disabled = true; t2.readOnly = true; t2.classList.add('input-locked'); }
-
     const startBtn = document.getElementById('btnStartWriting');
     const submitBtn = document.getElementById('btnSubmitWriting');
     if (startBtn) { startBtn.disabled = true; startBtn.style.display = 'none'; }
@@ -1116,9 +1252,6 @@
   }
 
   function lockSpeakingSection() {
-    const notes = document.getElementById('speakingNotesText');
-    if (notes) { notes.disabled = true; notes.readOnly = true; notes.classList.add('input-locked'); }
-
     const submitBtn = document.getElementById('btnSubmitSpeaking');
     if (submitBtn) { submitBtn.disabled = true; submitBtn.classList.add('disabled'); }
 
@@ -1127,6 +1260,91 @@
       bannerBadge.className = 'status-badge locked';
       bannerBadge.innerHTML = '<i class="fa-solid fa-lock"></i> Submitted';
     }
+  }
+
+  // --- UNLIMITED ATTEMPTS RESET ENGINE ---
+  function resetSkillSession(skill) {
+    // 1. Reset Storage for active batch and skill
+    Storage.set(skill, 'status', 'not_started');
+    Storage.set(skill, 'answers', {});
+    try {
+      localStorage.removeItem(Storage.getKey(skill, 'timer'));
+      localStorage.removeItem(Storage.getKey(skill, 'result'));
+    } catch (e) {
+      console.warn('Storage clear error:', e);
+    }
+
+    // 2. Stop active timer
+    if (activeIntervals[skill]) {
+      clearInterval(activeIntervals[skill]);
+      delete activeIntervals[skill];
+    }
+
+    // 3. Reset input elements & remove review hints
+    if (skill === 'listening' || skill === 'reading') {
+      for (let i = 1; i <= 40; i++) {
+        const input = document.getElementById(skill + '_ans_' + i);
+        if (input) {
+          input.value = '';
+          input.disabled = false;
+          input.readOnly = false;
+          input.classList.remove('input-locked');
+        }
+        const row = input ? input.closest('.answer-row') : null;
+        if (row) {
+          row.classList.remove('is-correct', 'is-incorrect');
+          const hint = row.querySelector('.answer-key-hint');
+          if (hint) hint.remove();
+        }
+      }
+    }
+
+    // 4. Reset Timer display
+    const timerElemId = skill === 'listening' ? 'timerListening' : skill === 'reading' ? 'timerReading' : 'timerWriting';
+    const timerElem = document.getElementById(timerElemId);
+    const defaultDuration = TIMERS_CONFIG[skill] || 1800;
+    if (timerElem) {
+      timerElem.textContent = formatTime(defaultDuration);
+    }
+
+    // 5. Reset Start & Submit buttons
+    const capSkill = skill.charAt(0).toUpperCase() + skill.slice(1);
+    const startBtn = document.getElementById('btnStart' + capSkill);
+    const submitBtn = document.getElementById('btnSubmit' + capSkill);
+    if (startBtn) {
+      startBtn.disabled = false;
+      startBtn.style.display = 'inline-flex';
+    }
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('disabled');
+    }
+
+    // 6. Reset Banner Badge
+    const bannerBadge = document.getElementById(skill + 'StatusBadge');
+    if (bannerBadge) {
+      bannerBadge.className = 'status-badge active';
+      bannerBadge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Ready';
+    }
+
+    // 7. Hide Results Container
+    const resultsArea = document.getElementById(skill + 'ResultsArea');
+    if (resultsArea) {
+      resultsArea.innerHTML = '';
+      resultsArea.style.display = 'none';
+    }
+
+    // 8. Scroll smoothly to first question or section top
+    const firstTarget = document.getElementById(skill + '_ans_1') || document.getElementById('sec-' + skill);
+    if (firstTarget) {
+      firstTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (firstTarget.focus && typeof firstTarget.focus === 'function') {
+        try { firstTarget.focus(); } catch (e) {}
+      }
+    }
+
+    // 9. Toast notification
+    showToast('🔄 Sesi baru ' + skill.toUpperCase() + ' dimulai! Jawaban dan timer telah di-reset.');
   }
 
   // --- 10. MODAL CONFIRMATION HANDLER ---
@@ -1139,8 +1357,7 @@
     const confirmBtn = document.getElementById('btnConfirmSubmitNow');
 
     if (!modal) {
-      // Fallback to native window.confirm
-      if (window.confirm('Kumpulkan jawaban ' + skill.toUpperCase() + ' sekarang? Jawaban akan TERKUNCI PERMANEN dan tidak dapat diubah lagi.')) {
+      if (window.confirm('Kumpulkan jawaban ' + skill.toUpperCase() + ' sekarang?')) {
         onConfirm();
       }
       return;
@@ -1177,20 +1394,162 @@
     pendingSubmission = null;
   }
 
-  // --- 11. TIME EXPIRED NOTIFICATION ---
-  function notifyTimeExpired(skill) {
+  // --- 11. TOAST NOTIFICATION HELPER ---
+  function showToast(msg) {
     const toastNotice = document.getElementById('toastNotice');
     const toastMessage = document.getElementById('toastMessage');
-    const msg = '⏰ Waktu pengerjaan ' + skill.toUpperCase() + ' telah habis! Jawaban Anda tidak dihapus. Silakan klik tombol "Submit ' + skill.toUpperCase() + '" untuk menyelesaikan.';
-
     if (toastNotice && toastMessage) {
       toastMessage.textContent = msg;
       toastNotice.classList.add('show');
       setTimeout(function () {
         toastNotice.classList.remove('show');
-      }, 7000);
+      }, 5000);
     } else {
       alert(msg);
+    }
+  }
+
+  function notifyTimeExpired(skill) {
+    showToast('⏰ Waktu pengerjaan ' + skill.toUpperCase() + ' telah habis! Jawaban Anda tidak dihapus. Silakan klik tombol "Submit ' + skill.toUpperCase() + '" untuk melihat hasil.');
+  }
+
+  // --- 11B. EXAM SECTION FILTER BARS & SWITCHER ---
+  function initSectionFilterBars() {
+    // Listening Section Filters (All, 1-2, 3-4)
+    const listeningBar = document.getElementById('listeningSectionFilterBar');
+    if (listeningBar) {
+      const chips = listeningBar.querySelectorAll('.filter-chip-btn');
+      chips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          const filter = this.getAttribute('data-filter');
+          chips.forEach(function (c) { c.classList.remove('active'); });
+          this.classList.add('active');
+          applyListeningFilter(filter);
+        });
+      });
+
+      const secParam = urlParams.get('section');
+      if (secParam === '1-2') {
+        const chip12 = listeningBar.querySelector('[data-filter="1-2"]');
+        if (chip12) chip12.click();
+      } else if (secParam === '3-4') {
+        const chip34 = listeningBar.querySelector('[data-filter="3-4"]');
+        if (chip34) chip34.click();
+      }
+    }
+
+    // Reading Section Filters (All, p1, p2, p3)
+    const readingBar = document.getElementById('readingSectionFilterBar');
+    if (readingBar) {
+      const chips = readingBar.querySelectorAll('.filter-chip-btn');
+      chips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          const filter = this.getAttribute('data-filter');
+          chips.forEach(function (c) { c.classList.remove('active'); });
+          this.classList.add('active');
+          applyReadingFilter(filter);
+        });
+      });
+
+      const passParam = urlParams.get('passage');
+      if (passParam === '1' || passParam === 'p1') {
+        const chipP1 = readingBar.querySelector('[data-filter="p1"]');
+        if (chipP1) chipP1.click();
+      } else if (passParam === '2' || passParam === 'p2') {
+        const chipP2 = readingBar.querySelector('[data-filter="p2"]');
+        if (chipP2) chipP2.click();
+      } else if (passParam === '3' || passParam === 'p3') {
+        const chipP3 = readingBar.querySelector('[data-filter="p3"]');
+        if (chipP3) chipP3.click();
+      }
+    }
+  }
+
+  function applyListeningFilter(filter) {
+    for (let i = 1; i <= 40; i++) {
+      const input = document.getElementById('listening_ans_' + i);
+      const row = input ? input.closest('.answer-row') : null;
+      if (!row) continue;
+
+      if (filter === '1-2') {
+        row.style.display = (i >= 1 && i <= 20) ? 'flex' : 'none';
+      } else if (filter === '3-4') {
+        row.style.display = (i >= 21 && i <= 40) ? 'flex' : 'none';
+      } else {
+        row.style.display = 'flex';
+      }
+    }
+  }
+
+  function applyReadingFilter(filter) {
+    for (let i = 1; i <= 40; i++) {
+      const input = document.getElementById('reading_ans_' + i);
+      const row = input ? input.closest('.answer-row') : null;
+      if (!row) continue;
+
+      if (filter === 'p1') {
+        row.style.display = (i >= 1 && i <= 13) ? 'flex' : 'none';
+      } else if (filter === 'p2') {
+        row.style.display = (i >= 14 && i <= 26) ? 'flex' : 'none';
+      } else if (filter === 'p3') {
+        row.style.display = (i >= 27 && i <= 40) ? 'flex' : 'none';
+      } else {
+        row.style.display = 'flex';
+      }
+    }
+  }
+
+  function initHeaderSkillSwitcher() {
+    const switcher = document.getElementById('examSkillSwitcher');
+    if (!switcher) return;
+
+    const tabs = switcher.querySelectorAll('.exam-skill-tab');
+    const sections = {
+      listening: document.getElementById('sec-listening'),
+      reading: document.getElementById('sec-reading'),
+      writing: document.getElementById('sec-writing'),
+      speaking: document.getElementById('sec-speaking')
+    };
+
+    function activateSkillTab(targetSkill) {
+      tabs.forEach(function (t) {
+        if (t.getAttribute('data-skill') === targetSkill) {
+          t.classList.add('active');
+        } else {
+          t.classList.remove('active');
+        }
+      });
+
+      if (targetSkill === 'all') {
+        Object.keys(sections).forEach(function (k) {
+          if (sections[k]) sections[k].style.display = 'block';
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        Object.keys(sections).forEach(function (k) {
+          if (sections[k]) {
+            if (k === targetSkill) {
+              sections[k].style.display = 'block';
+              sections[k].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+              sections[k].style.display = 'none';
+            }
+          }
+        });
+      }
+    }
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        const sk = this.getAttribute('data-skill');
+        activateSkillTab(sk);
+      });
+    });
+
+    // Check URL skill parameter
+    const initialSkill = urlParams.get('skill');
+    if (initialSkill && (sections[initialSkill] || initialSkill === 'all')) {
+      activateSkillTab(initialSkill);
     }
   }
 
@@ -1230,6 +1589,10 @@
     renderDynamicWritingContent(ACTIVE_BATCH);
     renderDynamicSpeakingContent(ACTIVE_BATCH);
 
+    // 1C. Skill Switcher & Section Filters
+    initHeaderSkillSwitcher();
+    initSectionFilterBars();
+
     // 2. Setup Confirm Modal Cancel buttons
     const cancelModalBtns = document.querySelectorAll('.cancel-confirm-modal');
     cancelModalBtns.forEach(function (btn) {
@@ -1253,6 +1616,10 @@
           if (Storage.get('listening', 'status', 'not_started') === 'submitted') return;
           listeningAnswers[String(i)] = input.value;
           Storage.set('listening', 'answers', listeningAnswers);
+          // Auto-set status to in_progress if was not_started
+          if (Storage.get('listening', 'status', 'not_started') === 'not_started') {
+            Storage.set('listening', 'status', 'in_progress');
+          }
         };
         input.addEventListener('input', handleAnswerUpdate);
         input.addEventListener('change', handleAnswerUpdate);
@@ -1293,14 +1660,14 @@
           }
           Storage.set('listening', 'answers', listeningAnswers);
 
-          // 2. Perform submit
+          // 2. Mark submitted & stop timer
           Storage.set('listening', 'status', 'submitted');
           if (activeIntervals.listening) {
             clearInterval(activeIntervals.listening);
             delete activeIntervals.listening;
           }
 
-          // 3. Evaluate score
+          // 3. Evaluate score with pro-rata support
           const results = evaluateSkill('listening', listeningAnswers);
           Storage.set('listening', 'result', results);
 
@@ -1342,11 +1709,16 @@
         if (readingAnswers[String(i)]) {
           input.value = readingAnswers[String(i)];
         }
-        input.addEventListener('input', function () {
+        const handleReadingUpdate = function () {
           if (Storage.get('reading', 'status', 'not_started') === 'submitted') return;
           readingAnswers[String(i)] = input.value;
           Storage.set('reading', 'answers', readingAnswers);
-        });
+          if (Storage.get('reading', 'status', 'not_started') === 'not_started') {
+            Storage.set('reading', 'status', 'in_progress');
+          }
+        };
+        input.addEventListener('input', handleReadingUpdate);
+        input.addEventListener('change', handleReadingUpdate);
       }
     }
 
@@ -1375,16 +1747,33 @@
       btnSubmitReading.addEventListener('click', function () {
         if (Storage.get('reading', 'status', 'not_started') === 'submitted') return;
         showConfirmModal('reading', function () {
-          // Perform submit
+          for (let i = 1; i <= 40; i++) {
+            const input = document.getElementById('reading_ans_' + i);
+            if (input) {
+              readingAnswers[String(i)] = input.value;
+            }
+          }
+          Storage.set('reading', 'answers', readingAnswers);
+
+          // Mark submitted & stop timer
           Storage.set('reading', 'status', 'submitted');
           if (activeIntervals.reading) {
             clearInterval(activeIntervals.reading);
             delete activeIntervals.reading;
           }
+
+          // Evaluate score with pro-rata support
           const results = evaluateSkill('reading', readingAnswers);
           Storage.set('reading', 'result', results);
+
+          // Lock section & render results
           lockReadingSection();
           renderScoringResults('reading', 'readingResultsArea', results);
+
+          const resultsElem = document.getElementById('readingResultsArea');
+          if (resultsElem) {
+            resultsElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         });
       });
     }
@@ -1403,15 +1792,16 @@
     }
 
     // -------------------------------------------------------------
-    // WRITING 60-MINUTE TIMER (READ-ONLY PRACTICE)
+    // WRITING 60-MINUTE TIMER & SUBMISSION
     // -------------------------------------------------------------
+    const writingStatus = Storage.get('writing', 'status', 'not_started');
     initSectionTimer('writing', 'timerWriting', function () {
       notifyTimeExpired('writing');
     });
 
     const btnStartWriting = document.getElementById('btnStartWriting');
     if (btnStartWriting) {
-      if (Storage.get('writing', 'status', 'not_started') === 'in_progress') {
+      if (writingStatus === 'in_progress') {
         btnStartWriting.style.display = 'none';
       }
       btnStartWriting.addEventListener('click', function () {
@@ -1420,6 +1810,63 @@
         });
         btnStartWriting.style.display = 'none';
       });
+    }
+
+    const btnSubmitWriting = document.getElementById('btnSubmitWriting');
+    if (btnSubmitWriting) {
+      btnSubmitWriting.addEventListener('click', function () {
+        if (Storage.get('writing', 'status', 'not_started') === 'submitted') return;
+        showConfirmModal('writing', function () {
+          Storage.set('writing', 'status', 'submitted');
+          if (activeIntervals.writing) {
+            clearInterval(activeIntervals.writing);
+            delete activeIntervals.writing;
+          }
+          lockWritingSection();
+          const wordData = { task1Words: 0, task2Words: 0 };
+          Storage.set('writing', 'result', wordData);
+          renderWritingResults('writingResultsArea', wordData);
+
+          const resultsElem = document.getElementById('writingResultsArea');
+          if (resultsElem) {
+            resultsElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+    }
+
+    if (writingStatus === 'submitted') {
+      lockWritingSection();
+      const savedWriting = Storage.get('writing', 'result', { task1Words: 0, task2Words: 0 });
+      renderWritingResults('writingResultsArea', savedWriting);
+    }
+
+    // -------------------------------------------------------------
+    // SPEAKING SUBMISSION
+    // -------------------------------------------------------------
+    const speakingStatus = Storage.get('speaking', 'status', 'not_started');
+    const btnSubmitSpeaking = document.getElementById('btnSubmitSpeaking');
+    if (btnSubmitSpeaking) {
+      btnSubmitSpeaking.addEventListener('click', function () {
+        if (Storage.get('speaking', 'status', 'not_started') === 'submitted') return;
+        showConfirmModal('speaking', function () {
+          Storage.set('speaking', 'status', 'submitted');
+          lockSpeakingSection();
+          const speakingData = { completed: true };
+          Storage.set('speaking', 'result', speakingData);
+          renderSpeakingResults('speakingResultsArea', 0);
+
+          const resultsElem = document.getElementById('speakingResultsArea');
+          if (resultsElem) {
+            resultsElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+    }
+
+    if (speakingStatus === 'submitted') {
+      lockSpeakingSection();
+      renderSpeakingResults('speakingResultsArea', 0);
     }
 
   });

@@ -1133,3 +1133,253 @@
   white-space: nowrap;
   border: 1px solid rgba(245, 158, 11, 0.25);
 }
+
+/* ===================================================================
+   15. PRACTICES SYSTEM & UNLIMITED ATTEMPTS REVISION STYLES
+   =================================================================== */
+
+/* Breadcrumb Bar */
+.practice-breadcrumb-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.825rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.practice-breadcrumb-bar a {
+  color: var(--text-muted);
+  transition: color 0.2s ease;
+  text-decoration: none;
+}
+
+.practice-breadcrumb-bar a:hover {
+  color: var(--accent-primary);
+}
+
+.practice-breadcrumb-bar .breadcrumb-sep {
+  opacity: 0.4;
+  font-size: 0.75rem;
+}
+
+/* Category Tabs in Practice Library */
+.skill-category-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 0 auto 36px;
+  flex-wrap: wrap;
+}
+
+.skill-category-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.skill-category-tab:hover {
+  color: var(--text-main);
+  border-color: var(--accent-border);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.12);
+}
+
+.skill-category-tab.active {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+}
+
+.skill-category-tab .tab-icon {
+  font-size: 1.1rem;
+}
+
+/* Batch Card Action Buttons for Sections */
+.batch-section-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.batch-section-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.batch-section-row .btn {
+  flex: 1;
+  min-width: 120px;
+  font-size: 0.775rem;
+  padding: 7px 10px;
+  text-align: center;
+  justify-content: center;
+}
+
+/* Section Filter Bar in Exam UI */
+.exam-section-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(10, 15, 29, 0.65);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.filter-bar-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 4px;
+}
+
+.filter-chip-btn {
+  padding: 5px 12px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  font-size: 0.775rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-chip-btn:hover {
+  color: var(--text-main);
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.filter-chip-btn.active {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+/* Exam Skill Switcher in Exam Header */
+.exam-skill-switcher {
+  display: flex;
+  gap: 6px;
+  background: rgba(10, 15, 29, 0.7);
+  padding: 4px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+}
+
+.exam-skill-tab {
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.exam-skill-tab:hover {
+  color: var(--text-main);
+}
+
+.exam-skill-tab.active {
+  background: var(--accent-primary);
+  color: #0A0F1D;
+  font-weight: 700;
+}
+
+/* Partial Pill in Results */
+.band-score-pill.partial-pill {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: var(--accent-cyan, #38BDF8);
+  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.15);
+}
+
+.band-score-pill.partial-pill .band-score-label {
+  color: var(--accent-cyan, #38BDF8);
+}
+
+.stat-card.stat-answered .stat-num {
+  color: var(--accent-cyan, #38BDF8);
+}
+
+.stat-card.stat-accuracy .stat-num {
+  color: var(--accent-primary);
+}
+
+/* Try Again Button */
+.btn-try-again {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+  color: #0A0F1D !important;
+  font-weight: 700 !important;
+  border: none !important;
+  box-shadow: 0 4px 18px rgba(245, 158, 11, 0.35) !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-try-again:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(245, 158, 11, 0.5) !important;
+}
+
+/* Review States on Answer Rows */
+.answer-row.is-correct input {
+  border-color: #10B981 !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+}
+
+.answer-row.is-correct .answer-label {
+  color: #10B981 !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+.answer-row.is-incorrect input {
+  border-color: #EF4444 !important;
+  background: rgba(239, 68, 68, 0.08) !important;
+}
+
+.answer-row.is-incorrect .answer-label {
+  color: #EF4444 !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+.answer-key-hint {
+  display: block;
+  font-size: 0.675rem;
+  color: #10B981;
+  margin-top: 3px;
+  font-weight: 600;
+  background: rgba(16, 185, 129, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  line-height: 1.3;
+}

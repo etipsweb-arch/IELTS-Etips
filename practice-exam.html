@@ -38,20 +38,23 @@
         </div>
       </div>
 
-      <!-- Quick Anchor Jump to Sections -->
-      <nav class="exam-jump-bar" aria-label="Exam Section Jumps">
-        <a href="#sec-listening" class="jump-link">
-          <i class="fa-solid fa-headphones"></i> 1. Listening
-        </a>
-        <a href="#sec-reading" class="jump-link">
-          <i class="fa-solid fa-book-open"></i> 2. Reading
-        </a>
-        <a href="#sec-writing" class="jump-link">
-          <i class="fa-solid fa-pen-nib"></i> 3. Writing
-        </a>
-        <a href="#sec-speaking" class="jump-link">
-          <i class="fa-solid fa-microphone"></i> 4. Speaking
-        </a>
+      <!-- Exam Skill Switcher & Navigation -->
+      <nav class="exam-skill-switcher" id="examSkillSwitcher" aria-label="Exam Section Switcher">
+        <button type="button" class="exam-skill-tab active" data-skill="listening">
+          <i class="fa-solid fa-headphones"></i> Listening
+        </button>
+        <button type="button" class="exam-skill-tab" data-skill="reading">
+          <i class="fa-solid fa-book-open"></i> Reading
+        </button>
+        <button type="button" class="exam-skill-tab" data-skill="writing">
+          <i class="fa-solid fa-pen-nib"></i> Writing
+        </button>
+        <button type="button" class="exam-skill-tab" data-skill="speaking">
+          <i class="fa-solid fa-microphone"></i> Speaking
+        </button>
+        <button type="button" class="exam-skill-tab" data-skill="all">
+          <i class="fa-solid fa-layer-group"></i> All
+        </button>
       </nav>
 
       <div class="practice-nav-right">
@@ -163,6 +166,14 @@
               <i class="fa-solid fa-list-check" style="color: var(--accent-primary);"></i> Listening Answer Sheet (1–40)
             </span>
             <span class="col-header-tag">[40 Questions Grid]</span>
+          </div>
+
+          <!-- Section Filter Bar for Listening -->
+          <div class="exam-section-filter-bar" id="listeningSectionFilterBar">
+            <span class="filter-bar-label"><i class="fa-solid fa-filter"></i> Latihan:</span>
+            <button type="button" class="filter-chip-btn active" data-filter="all"><i class="fa-solid fa-list-ol"></i> Semua (1–40)</button>
+            <button type="button" class="filter-chip-btn" data-filter="1-2"><i class="fa-solid fa-headphones"></i> Sec 1+2 (1–20)</button>
+            <button type="button" class="filter-chip-btn" data-filter="3-4"><i class="fa-solid fa-headphones"></i> Sec 3+4 (21–40)</button>
           </div>
 
           <!-- 40 Answer Inputs in Compact 2-Column Grid -->
@@ -301,6 +312,15 @@
             <span class="col-header-tag">[40 Questions Grid]</span>
           </div>
 
+          <!-- Section Filter Bar for Reading -->
+          <div class="exam-section-filter-bar" id="readingSectionFilterBar">
+            <span class="filter-bar-label"><i class="fa-solid fa-filter"></i> Latihan:</span>
+            <button type="button" class="filter-chip-btn active" data-filter="all"><i class="fa-solid fa-list-ol"></i> Semua (1–40)</button>
+            <button type="button" class="filter-chip-btn" data-filter="p1"><i class="fa-solid fa-book-open"></i> Pass 1 (1–13)</button>
+            <button type="button" class="filter-chip-btn" data-filter="p2"><i class="fa-solid fa-book-open"></i> Pass 2 (14–26)</button>
+            <button type="button" class="filter-chip-btn" data-filter="p3"><i class="fa-solid fa-book-open"></i> Pass 3 (27–40)</button>
+          </div>
+
           <!-- 40 Answer Inputs in Compact 2-Column Grid -->
           <div class="answers-grid-40" id="readingAnswersContainer">
             <div class="answer-row"><span class="answer-label">Q 01</span><input type="text" class="answer-input-mock" id="reading_ans_1" placeholder="Ans 1..."></div>
@@ -374,7 +394,7 @@
           </div>
         </div>
 
-        <!-- Shared Timer -->
+        <!-- Shared Timer & Actions -->
         <div class="section-actions">
           <div class="exam-timer-box" aria-label="Writing Countdown Timer">
             <i class="fa-regular fa-clock"></i>
@@ -383,6 +403,9 @@
           </div>
           <button type="button" class="btn btn-primary btn-sm" id="btnStartWriting">
             <i class="fa-solid fa-play"></i> Start Timer
+          </button>
+          <button type="button" class="btn btn-outline-gold btn-sm" id="btnSubmitWriting">
+            <i class="fa-solid fa-check-double"></i> Selesai Writing
           </button>
         </div>
       </div>
@@ -406,6 +429,9 @@
           ></iframe>
         </div>
       </div>
+
+      <!-- Section Results Container -->
+      <div class="exam-results-container" id="writingResultsArea"></div>
     </section>
 
     <!-- ==========================================
@@ -436,6 +462,9 @@
             <i class="fa-solid fa-user-clock"></i>
             <span>Examiner-Guided (11–14 Mins)</span>
           </div>
+          <button type="button" class="btn btn-outline-gold btn-sm" id="btnSubmitSpeaking">
+            <i class="fa-solid fa-check-double"></i> Selesai Speaking
+          </button>
         </div>
       </div>
 
@@ -458,6 +487,9 @@
           ></iframe>
         </div>
       </div>
+
+      <!-- Section Results Container -->
+      <div class="exam-results-container" id="speakingResultsArea"></div>
     </section>
 
   </main>
@@ -475,18 +507,18 @@
       </div>
       <div style="padding: 16px 0; font-size: 0.9rem; color: var(--text-body); line-height: 1.6;">
         <p style="margin-bottom: 10px;">
-          <strong style="color: var(--accent-hover);"><i class="fa-solid fa-lock"></i> PERHATIAN:</strong> Setiap skill hanya dapat dikumpulkan <strong>satu kali (One-Time Submission)</strong>.
+          <strong style="color: var(--accent-primary);"><i class="fa-solid fa-circle-check"></i> KONFIRMASI:</strong> Sesi latihan ini akan diselesaikan dan dievaluasi secara otomatis.
         </p>
         <p style="margin-bottom: 0; color: var(--text-muted); font-size: 0.85rem;">
-          Setelah konfirmasi, seluruh jawaban pada modul ini akan <strong>terkunci permanen</strong> pada browser Anda dan tidak dapat diubah atau diulang kembali.
+          Anda dapat mengerjakan sebagian atau seluruh soal. Setelah melihat hasil evaluasi, Anda dapat mengulang latihan ini kapan saja tanpa batas dengan memilih <strong>"Try Again"</strong>.
         </p>
       </div>
       <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 14px; flex-wrap: wrap;">
         <button type="button" class="btn btn-secondary cancel-confirm-modal">
-          Batal / Kembali
+          Batal / Lanjutkan Latihan
         </button>
         <button type="button" class="btn btn-primary" id="btnConfirmSubmitNow">
-          <i class="fa-solid fa-lock"></i> Ya, Kunci &amp; Kumpulkan
+          <i class="fa-solid fa-paper-plane"></i> Ya, Kumpulkan Sekarang
         </button>
       </div>
     </div>
