@@ -893,19 +893,31 @@
     for (let i = 1; i <= totalQuestions; i++) {
       const qKey = String(i);
       const rawUserAns = (userAnswers[qKey] || '').trim();
-      const cleanUserAns = rawUserAns.replace(/\s+/g, ' ');
+      // Strip leading and trailing punctuation like periods or commas while keeping words clean
+      const cleanUserAns = rawUserAns.replace(/^[.,;:!?'"“”‘’]+|[.,;:!?'"“”‘’]+$/g, '').replace(/\s+/g, ' ');
       const acceptable = answerKeys[qKey];
 
       if (!cleanUserAns) {
         unanswered++;
-        details[qKey] = { status: 'unanswered', userAns: '', key: acceptable };
+        details[qKey] = { status: 'unanswered', userAns: '' };
       } else if (!acceptable) {
         // No key for this particular question
         unanswered++;
-        details[qKey] = { status: 'unanswered', userAns: rawUserAns, key: null };
+        details[qKey] = { status: 'unanswered', userAns: rawUserAns };
       } else {
+        // Expand acceptable variants (support arrays and slash-separated alternatives like 'bike / bicycle')
+        const acceptableItems = [];
+        (Array.isArray(acceptable) ? acceptable : [acceptable]).forEach(function (item) {
+          const str = String(item).trim();
+          if (str.includes('/')) {
+            str.split('/').forEach(function (part) {
+              if (part.trim()) acceptableItems.push(part.trim());
+            });
+          }
+          acceptableItems.push(str);
+        });
+
         // Case-insensitive and whitespace-normalized scoring for IELTS
-        const acceptableItems = Array.isArray(acceptable) ? acceptable : [acceptable];
         const cleanUserAnsLower = cleanUserAns.toLowerCase();
         const isMatch = acceptableItems.some(function (a) {
           const s = String(a).trim().replace(/\s+/g, ' ').toLowerCase();
@@ -914,10 +926,10 @@
 
         if (isMatch) {
           correct++;
-          details[qKey] = { status: 'correct', userAns: rawUserAns, key: acceptable };
+          details[qKey] = { status: 'correct', userAns: rawUserAns };
         } else {
           incorrect++;
-          details[qKey] = { status: 'incorrect', userAns: rawUserAns, key: acceptable };
+          details[qKey] = { status: 'incorrect', userAns: rawUserAns };
         }
       }
     }
@@ -1750,17 +1762,14 @@
       });
     }
 
-    // Check if already submitted
+    // Ensure clean state on refresh (do not persist submitted lock across refreshes)
     if (listeningStatus === 'submitted') {
-      lockListeningSection();
-      const savedResult = Storage.get('listening', 'result', null);
-      if (savedResult && savedResult.isConfigured) {
-        renderScoringResults('listening', 'listeningResultsArea', savedResult);
-      } else {
-        const evaluated = evaluateSkill('listening', listeningAnswers);
-        Storage.set('listening', 'result', evaluated);
-        renderScoringResults('listening', 'listeningResultsArea', evaluated);
-      }
+      Storage.set('listening', 'status', 'not_started');
+      Storage.set('listening', 'answers', {});
+      try {
+        localStorage.removeItem(Storage.getKey('listening', 'result'));
+        localStorage.removeItem(Storage.getKey('listening', 'timer'));
+      } catch (e) {}
     }
 
     // -------------------------------------------------------------
@@ -1845,17 +1854,14 @@
       });
     }
 
-    // Check if already submitted
+    // Ensure clean state on refresh (do not persist submitted lock across refreshes)
     if (readingStatus === 'submitted') {
-      lockReadingSection();
-      const savedResult = Storage.get('reading', 'result', null);
-      if (savedResult && savedResult.isConfigured) {
-        renderScoringResults('reading', 'readingResultsArea', savedResult);
-      } else {
-        const evaluated = evaluateSkill('reading', readingAnswers);
-        Storage.set('reading', 'result', evaluated);
-        renderScoringResults('reading', 'readingResultsArea', evaluated);
-      }
+      Storage.set('reading', 'status', 'not_started');
+      Storage.set('reading', 'answers', {});
+      try {
+        localStorage.removeItem(Storage.getKey('reading', 'result'));
+        localStorage.removeItem(Storage.getKey('reading', 'timer'));
+      } catch (e) {}
     }
 
     // -------------------------------------------------------------

@@ -223,12 +223,12 @@
     '5':  'season',
     '6':  'accommodation',
     '7':  'blog',
-    '8':  'FALSE',
-    '9':  'NOT GIVEN',
-    '10': 'FALSE',
-    '11': 'TRUE',
-    '12': 'NOT GIVEN',
-    '13': 'TRUE',
+    '8':  ['FALSE', 'F'],
+    '9':  ['NOT GIVEN', 'NG'],
+    '10': ['FALSE', 'F'],
+    '11': ['TRUE', 'T'],
+    '12': ['NOT GIVEN', 'NG'],
+    '13': ['TRUE', 'T'],
     '14': ['iv', 'IV'],
     '15': ['vi', 'VI'],
     '16': ['i', 'I'],
@@ -253,16 +253,16 @@
     '35': 'C',
     '36': 'G',
     '37': 'B',
-    '38': 'YES',
-    '39': 'NOT GIVEN',
-    '40': 'NO'
+    '38': ['YES', 'Y'],
+    '39': ['NOT GIVEN', 'NG'],
+    '40': ['NO', 'N']
   };
 
   // --- Batch 01: Listening Answer Keys ---
   BATCHES_CONFIG['01'].listeningAnswerKeys = {
     '1':  'choose',
     '2':  'private',
-    '3':  ['20', 'twenty percent'],
+    '3':  ['20', 'twenty percent', '20%', '20 percent'],
     '4':  'healthy',
     '5':  'bones',
     '6':  'lecture',
@@ -402,6 +402,297 @@
   // --- Batch 01: Writing & Speaking Question PDFs ---
   BATCHES_CONFIG['01'].writingPdfUrl = 'assets/data/writing/batch 01/batch 01.pdf';
   BATCHES_CONFIG['01'].speakingPdfUrl = 'assets/data/speaking/batch 01/batch 01.pdf';
+
+  // =========================================================
+  // BATCH 02 — Cambridge IELTS 13 Test 2 (C13T2)
+  // Listening: Sections 1–4, Q1–40
+  // Reading: Passages 1–3, Q1–40
+  // =========================================================
+  BATCHES_CONFIG['02'].questionPdfUrl = 'assets/data/listening/batch 02/question batch 02.pdf';
+  BATCHES_CONFIG['02'].readingPdfUrl = 'assets/data/reading/batch 02/question batch 02.pdf';
+  BATCHES_CONFIG['02'].writingPdfUrl = 'assets/data/writing/batch 02/batch 02.pdf';
+  BATCHES_CONFIG['02'].speakingPdfUrl = 'assets/data/speaking/batch 02/batch 02.pdf';
+  BATCHES_CONFIG['02'].readingMode = 'academic';
+
+  BATCHES_CONFIG['02'].listeningAnswerKeys = {
+    '1':  'races',
+    '2':  'insurance',
+    '3':  'Jerriz',
+    '4':  ['25', 'twenty-five', 'twenty five'],
+    '5':  'stadium',
+    '6':  'park',
+    '7':  'coffee',
+    '8':  'leader',
+    '9':  'route',
+    '10': 'lights',
+    '11': 'C',
+    '12': 'B',
+    '13': 'C',
+    '14': 'B',
+    '15': 'B',
+    '16': 'A',
+    '17': ['C', 'E'],
+    '18': ['C', 'E'],
+    '19': ['B', 'D'],
+    '20': ['B', 'D'],
+    '21': 'B',
+    '22': 'A',
+    '23': 'C',
+    '24': 'C',
+    '25': 'A',
+    '26': 'A',
+    '27': 'C',
+    '28': 'D',
+    '29': 'G',
+    '30': 'B',
+    '31': 'location',
+    '32': 'world',
+    '33': 'personal',
+    '34': 'attention',
+    '35': 'name',
+    '36': 'network',
+    '37': 'frequency',
+    '38': ['colour', 'color'],
+    '39': 'brain',
+    '40': 'self'
+  };
+
+  BATCHES_CONFIG['02'].readingAnswerKeys = {
+    '1':  'oils',
+    '2':  'friendship',
+    '3':  'funerals',
+    '4':  'wealth',
+    '5':  'indigestion',
+    '6':  'India',
+    '7':  'camels',
+    '8':  'Alexandria',
+    '9':  'Venice',
+    '10': ['TRUE', 'T'],
+    '11': ['FALSE', 'F'],
+    '12': ['NOT GIVEN', 'NG'],
+    '13': ['FALSE', 'F'],
+    '14': 'B',
+    '15': 'F',
+    '16': 'B',
+    '17': 'E',
+    '18': 'A',
+    '19': 'B',
+    '20': 'C',
+    '21': 'animals',
+    '22': 'childbirth',
+    '23': 'placebo',
+    '24': 'game',
+    '25': 'strangers',
+    '26': 'names',
+    '27': 'D',
+    '28': 'C',
+    '29': 'A',
+    '30': 'D',
+    '31': 'D',
+    '32': 'D',
+    '33': 'C',
+    '34': 'B',
+    '35': 'A',
+    '36': 'C',
+    '37': 'A',
+    '38': 'B',
+    '39': 'C',
+    '40': 'D'
+  };
+
+  // =========================================================
+  // BATCH 03 — Cambridge IELTS 13 Test 3 (C13T3)
+  // Listening: Sections 1–4, Q1–40
+  // Reading: Passages 1–3, Q1–40
+  // =========================================================
+  BATCHES_CONFIG['03'].questionPdfUrl = 'assets/data/listening/batch 03/question batch 03.pdf';
+  BATCHES_CONFIG['03'].readingPdfUrl = 'assets/data/reading/batch 03/question batch 03.pdf';
+  BATCHES_CONFIG['03'].writingPdfUrl = 'assets/data/writing/batch 03/batch 03.pdf';
+  BATCHES_CONFIG['03'].speakingPdfUrl = 'assets/data/speaking/batch 03/batch 03.pdf';
+  BATCHES_CONFIG['03'].readingMode = 'academic';
+
+  BATCHES_CONFIG['03'].listeningAnswerKeys = {
+    '1':  '850',
+    '2':  ['bike', 'bicycle'],
+    '3':  'parking',
+    '4':  ['30', 'thirty'],
+    '5':  ['weekend', 'weekends'],
+    '6':  'cinema',
+    '7':  'hospital',
+    '8':  'dentist',
+    '9':  'Thursday',
+    '10': ['café', 'cafe'],
+    '11': 'F',
+    '12': 'D',
+    '13': 'A',
+    '14': 'B',
+    '15': 'C',
+    '16': 'G',
+    '17': ['B', 'C'],
+    '18': ['B', 'C'],
+    '19': ['B', 'D'],
+    '20': ['B', 'D'],
+    '21': 'C',
+    '22': 'A',
+    '23': 'A',
+    '24': 'B',
+    '25': 'C',
+    '26': 'F',
+    '27': 'H',
+    '28': 'D',
+    '29': 'A',
+    '30': 'E',
+    '31': ['tongue', 'tongues'],
+    '32': 'plants',
+    '33': 'snakes',
+    '34': 'sky',
+    '35': ['partner', 'partners'],
+    '36': 'contact',
+    '37': 'protection',
+    '38': ['tail', 'tails'],
+    '39': 'steps',
+    '40': ['injury', 'injuries']
+  };
+
+  BATCHES_CONFIG['03'].readingAnswerKeys = {
+    '1':  'furniture',
+    '2':  'sugar',
+    '3':  'ropes',
+    '4':  'charcoal',
+    '5':  'bowls',
+    '6':  'hormones',
+    '7':  'cosmetics',
+    '8':  'dynamite',
+    '9':  ['FALSE', 'F'],
+    '10': ['FALSE', 'F'],
+    '11': ['NOT GIVEN', 'NG'],
+    '12': ['TRUE', 'T'],
+    '13': ['NOT GIVEN', 'NG'],
+    '14': 'B',
+    '15': 'C',
+    '16': 'A',
+    '17': 'B',
+    '18': 'recording devices',
+    '19': ['fathers', 'dads', 'father', 'dad'],
+    '20': 'bridge hypothesis',
+    '21': 'repertoire',
+    '22': ['audio-recording vests', 'audio recording vests', 'vests'],
+    '23': 'vocabulary',
+    '24': 'F',
+    '25': 'A',
+    '26': 'E',
+    '27': 'C',
+    '28': 'H',
+    '29': 'A',
+    '30': 'B',
+    '31': 'D',
+    '32': 'shells',
+    '33': 'lake',
+    '34': 'rainfall',
+    '35': 'grains',
+    '36': 'pottery',
+    '37': 'B',
+    '38': 'A',
+    '39': 'D',
+    '40': 'A'
+  };
+
+  // =========================================================
+  // BATCH 04 — Cambridge IELTS 13 Test 4 (C13T4)
+  // Listening: Sections 1–4, Q1–40
+  // Reading: Passages 1–3, Q1–40
+  // =========================================================
+  BATCHES_CONFIG['04'].questionPdfUrl = 'assets/data/listening/batch 04/question batch 04.pdf';
+  BATCHES_CONFIG['04'].readingPdfUrl = 'assets/data/reading/batch 04/question batch 04.pdf';
+  BATCHES_CONFIG['04'].writingPdfUrl = 'assets/data/writing/batch 04/batch 04.pdf';
+  BATCHES_CONFIG['04'].speakingPdfUrl = 'assets/data/speaking/batch 04/batch 04.pdf';
+  BATCHES_CONFIG['04'].readingMode = 'academic';
+
+  BATCHES_CONFIG['04'].listeningAnswerKeys = {
+    '1':  ['finance', 'Finance'],
+    '2':  ['maths', 'math', 'mathematics'],
+    '3':  'business',
+    '4':  ['17', 'seventeen'],
+    '5':  ['holiday', 'holidays', 'vacation', 'vacations'],
+    '6':  'college',
+    '7':  'location',
+    '8':  'jeans',
+    '9':  'late',
+    '10': 'smile',
+    '11': 'A',
+    '12': 'B',
+    '13': 'A',
+    '14': 'C',
+    '15': 'A',
+    '16': 'B',
+    '17': 'B',
+    '18': 'D',
+    '19': 'A',
+    '20': 'E',
+    '21': 'A',
+    '22': 'A',
+    '23': 'C',
+    '24': 'C',
+    '25': 'B',
+    '26': 'A',
+    '27': ['B', 'C'],
+    '28': ['B', 'C'],
+    '29': ['D', 'E'],
+    '30': ['D', 'E'],
+    '31': 'destruction',
+    '32': ['universities', 'university'],
+    '33': 'political',
+    '34': ['port', 'ports'],
+    '35': ['slaves', 'slavery'],
+    '36': 'taxation',
+    '37': 'sugar',
+    '38': 'tea',
+    '39': 'transportation',
+    '40': 'night'
+  };
+
+  BATCHES_CONFIG['04'].readingAnswerKeys = {
+    '1':  ['FALSE', 'F'],
+    '2':  ['FALSE', 'F'],
+    '3':  ['TRUE', 'T'],
+    '4':  ['TRUE', 'T'],
+    '5':  ['FALSE', 'F'],
+    '6':  ['TRUE', 'T'],
+    '7':  ['NOT GIVEN', 'NG'],
+    '8':  ['TRUE', 'T'],
+    '9':  'wool',
+    '10': 'navigator',
+    '11': 'gale',
+    '12': 'training',
+    '13': 'fire',
+    '14': 'minerals',
+    '15': 'carbon',
+    '16': 'water',
+    '17': 'agriculture',
+    '18': 'C',
+    '19': 'E',
+    '20': 'A',
+    '21': 'D',
+    '22': 'E',
+    '23': 'C',
+    '24': 'F',
+    '25': 'G',
+    '26': 'F',
+    '27': 'D',
+    '28': 'A',
+    '29': 'B',
+    '30': 'F',
+    '31': 'B',
+    '32': 'G',
+    '33': 'E',
+    '34': 'A',
+    '35': ['YES', 'Y'],
+    '36': ['NOT GIVEN', 'NG'],
+    '37': ['NO', 'N'],
+    '38': ['NOT GIVEN', 'NG'],
+    '39': ['YES', 'Y'],
+    '40': ['NO', 'N']
+  };
 
   // =========================================================
   // BATCH 05 — Cambridge IELTS 14 Test 1 (C14T1)
