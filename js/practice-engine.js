@@ -517,14 +517,14 @@
       '02': { prefix: 'C13T2', folder: 'Batch 02', ext: 'mp3' },
       '03': { prefix: 'C13T3', folder: 'Batch 03', ext: 'mp3' },
       '04': { prefix: 'C13T4', folder: 'Batch 04', ext: 'mp3' },
-      '05': { prefix: 'C14T1',  folder: 'Batch 05', ext: 'mp3' },
-      '06': { prefix: 'C14T2',  folder: 'Batch 06', ext: 'mp3' },
-      '07': { prefix: 'C14T3',  folder: 'Batch 07', ext: 'mp3' },
-      '08': { prefix: 'C14T4',  folder: 'Batch 08', ext: 'mp3' },
-      '09': { prefix: 'C15T1',  folder: 'Batch 09', ext: 'm4a' },
-      '10': { prefix: 'C15T2',  folder: 'Batch 010', ext: 'm4a' },
-      '11': { prefix: 'C15T3',  folder: 'Batch 011', ext: 'm4a' },
-      '12': { prefix: 'C15T4',  folder: 'Batch 012', ext: 'm4a' }
+      '05': { prefix: 'C14T1',  folder: 'Batch 05', ext: 'mp3', sep: '  -SECTION -' },
+      '06': { prefix: 'C14T2',  folder: 'Batch 06', ext: 'mp3', sep: '  -SECTION -' },
+      '07': { prefix: 'C14T3',  folder: 'Batch 07', ext: 'mp3', sep: '  -SECTION -' },
+      '08': { prefix: 'C14T4',  folder: 'Batch 08', ext: 'mp3', sep: '  -SECTION -' },
+      '09': { prefix: 'C15T1',  folder: 'Batch 09', ext: 'm4a', sep: '  -SECTION -' },
+      '10': { prefix: 'C15T2',  folder: 'Batch 010', ext: 'm4a', sep: '  -SECTION -' },
+      '11': { prefix: 'C15T3',  folder: 'Batch 011', ext: 'm4a', sep: ' -SECTION -' },
+      '12': { prefix: 'C15T4',  folder: 'Batch 012', ext: 'm4a', sep: ' -SECTION -' }
     };
 
     const audioInfo = AUDIO_PATH_MAP[batchId] || null;
@@ -535,7 +535,8 @@
       // Build section audio path dynamically
       let audioTag = '';
       if (audioInfo) {
-        const rawAudioPath = 'assets/Audio/Listening/' + audioInfo.folder + '/' + audioInfo.prefix + ' -SECTION -' + sec.sectionNumber + '.' + audioInfo.ext;
+        const sep = audioInfo.sep || ' -SECTION -';
+        const rawAudioPath = 'assets/Audio/Listening/' + audioInfo.folder + '/' + audioInfo.prefix + sep + sec.sectionNumber + '.' + audioInfo.ext;
         const audioPath = encodeURI(rawAudioPath);
         audioTag = '<audio id="listeningAudioSection' + sec.sectionNumber + '" src="' + audioPath + '" controls style="width:100%; margin:10px 0 6px; border-radius:8px;"></audio>';
       }
@@ -1090,21 +1091,30 @@
       const row = input ? input.closest('.answer-row') : null;
 
       if (row && detail) {
-        // Clean any existing hint
+        // Clean any existing status icon or hint
+        const oldIcon = row.querySelector('.answer-status-icon');
+        if (oldIcon) oldIcon.remove();
         const oldHint = row.querySelector('.answer-key-hint');
         if (oldHint) oldHint.remove();
 
         if (detail.status === 'correct') {
           row.classList.add('is-correct');
           row.classList.remove('is-incorrect');
+          const icon = document.createElement('span');
+          icon.className = 'answer-status-icon is-correct';
+          icon.setAttribute('title', 'Jawaban Benar');
+          icon.setAttribute('aria-label', 'Benar');
+          icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+          row.appendChild(icon);
         } else if (detail.status === 'incorrect') {
           row.classList.add('is-incorrect');
           row.classList.remove('is-correct');
-          const keyDisplay = Array.isArray(detail.key) ? detail.key.join(' / ') : String(detail.key || '');
-          const hint = document.createElement('span');
-          hint.className = 'answer-key-hint';
-          hint.innerHTML = '<i class="fa-solid fa-check"></i> Kunci: ' + keyDisplay;
-          row.appendChild(hint);
+          const icon = document.createElement('span');
+          icon.className = 'answer-status-icon is-incorrect';
+          icon.setAttribute('title', 'Jawaban Salah');
+          icon.setAttribute('aria-label', 'Salah');
+          icon.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+          row.appendChild(icon);
         } else {
           row.classList.remove('is-correct', 'is-incorrect');
         }
@@ -1112,9 +1122,19 @@
     }
   }
 
-  function renderWritingResults(containerId, wordData) {
+  function renderWritingResults(containerId, resultData) {
     const container = document.getElementById(containerId);
     if (!container) return;
+
+    const subId = (resultData && resultData.submissionId) ? resultData.submissionId : '-';
+    const name = (resultData && resultData.studentName) ? resultData.studentName : '-';
+    const prog = (resultData && resultData.program) ? resultData.program : '-';
+    const t1Words = (resultData && resultData.task1Words) ? resultData.task1Words : 0;
+    const t2Words = (resultData && resultData.task2Words) ? resultData.task2Words : 0;
+    const timeStr = (resultData && resultData.timestamp) ? resultData.timestamp : new Date().toLocaleString('id-ID');
+    const note = (resultData && resultData.isDuplicate)
+      ? '<span style="color: #38BDF8;"><i class="fa-solid fa-circle-info"></i> Catatan: Pengiriman ulang dengan ID yang sama telah terkonfirmasi (tidak terjadi duplikasi data di spreadsheet).</span>'
+      : '<span style="color: #10B981;"><i class="fa-solid fa-circle-check"></i> Pengiriman berhasil tercatat di spreadsheet &amp; berkas DOCX tersimpan di Google Drive.</span>';
 
     container.innerHTML = `
       <div class="exam-results-card submitted-only">
@@ -1123,36 +1143,60 @@
             <span class="results-badge success"><i class="fa-solid fa-circle-check"></i> Writing Berhasil Dikumpulkan</span>
             <h3 class="results-heading">Konfirmasi Sesi — WRITING (Batch ${ACTIVE_BATCH})</h3>
           </div>
+          <div style="font-size: 0.825rem; color: var(--accent-hover); font-weight: 700; background: rgba(245, 158, 11, 0.1); padding: 5px 12px; border-radius: var(--radius-sm); border: 1px solid rgba(245, 158, 11, 0.3);">
+            <i class="fa-solid fa-fingerprint"></i> ID: ${subId}
+          </div>
         </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0;">
+          <div style="background: rgba(15, 23, 42, 0.6); padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+            <div style="font-size: 0.75rem; color: var(--text-muted);"><i class="fa-solid fa-user"></i> Nama Siswa</div>
+            <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-main); margin-top: 4px;">${name}</div>
+          </div>
+          <div style="background: rgba(15, 23, 42, 0.6); padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+            <div style="font-size: 0.75rem; color: var(--text-muted);"><i class="fa-solid fa-graduation-cap"></i> Program</div>
+            <div style="font-weight: 700; font-size: 0.95rem; color: var(--accent-primary); margin-top: 4px;">${prog}</div>
+          </div>
+          <div style="background: rgba(15, 23, 42, 0.6); padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+            <div style="font-size: 0.75rem; color: var(--text-muted);"><i class="fa-solid fa-clock"></i> Waktu Pengiriman</div>
+            <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-body); margin-top: 4px;">${timeStr}</div>
+          </div>
+        </div>
+
         <div class="writing-summary-grid">
           <div class="writing-summary-card">
-            <h4>Task 1 (Laporan/Grafik)</h4>
-            <p>Status: <strong>Selesai</strong> (Batas rekomendasi: 150 kata)</p>
+            <h4><i class="fa-solid fa-chart-column"></i> Task 1 (Report / Summary)</h4>
+            <p>Status: <strong>Terkirim</strong> (${t1Words} kata)</p>
           </div>
           <div class="writing-summary-card">
-            <h4>Task 2 (Esai)</h4>
-            <p>Status: <strong>Selesai</strong> (Batas rekomendasi: 250 kata)</p>
+            <h4><i class="fa-solid fa-pen-fancy"></i> Task 2 (Discursive Essay)</h4>
+            <p>Status: <strong>Terkirim</strong> (${t2Words} kata)</p>
           </div>
         </div>
+
         <p class="results-note-locked">
-          <i class="fa-solid fa-shield-halved"></i> Sesi Writing telah dikunci untuk evaluasi. Penilaian kriteria IELTS resmi (Task Response, Coherence &amp; Cohesion, Lexical Resource, Grammatical Range &amp; Accuracy) dilakukan oleh instruktur/tutor.
+          <i class="fa-solid fa-shield-halved"></i> ${note}<br>
+          Penilaian kriteria resmi IELTS (Task Response, Coherence &amp; Cohesion, Lexical Resource, Grammatical Range &amp; Accuracy) akan dilakukan oleh instruktur/tutor.
         </p>
+
         <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
           <div style="font-size: 0.8rem; color: var(--text-muted);">
-            <i class="fa-solid fa-infinity" style="color: var(--accent-primary);"></i> Unlimited Practice: Anda dapat mengulang sesi writing kapan saja.
+            <i class="fa-solid fa-circle-check" style="color: #10B981;"></i> Workspace telah dikosongkan dan siap digunakan kembali untuk latihan berikutnya.
           </div>
-          <button type="button" class="btn btn-try-again btn-sm" id="btnTryAgain_writing">
-            <i class="fa-solid fa-rotate-right"></i> Try Again (Reset &amp; Latihan Ulang)
+          <button type="button" class="btn btn-secondary btn-sm" id="btnNewWritingSession">
+            <i class="fa-solid fa-arrow-up"></i> Tulis Jawaban Baru / Sesi Baru
           </button>
         </div>
       </div>
     `;
     container.style.display = 'block';
 
-    const btnTryAgainWriting = document.getElementById('btnTryAgain_writing');
-    if (btnTryAgainWriting) {
-      btnTryAgainWriting.addEventListener('click', function () {
+    const btnNew = document.getElementById('btnNewWritingSession');
+    if (btnNew) {
+      btnNew.addEventListener('click', function () {
         resetSkillSession('writing');
+        const target = document.getElementById('writingStudentName') || document.getElementById('sec-writing');
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
       });
     }
   }
@@ -1293,10 +1337,33 @@
         const row = input ? input.closest('.answer-row') : null;
         if (row) {
           row.classList.remove('is-correct', 'is-incorrect');
+          const statusIcon = row.querySelector('.answer-status-icon');
+          if (statusIcon) statusIcon.remove();
           const hint = row.querySelector('.answer-key-hint');
           if (hint) hint.remove();
         }
       }
+    } else if (skill === 'writing') {
+      const nameInput = document.getElementById('writingStudentName');
+      const progSelect = document.getElementById('writingProgram');
+      const t1Area = document.getElementById('writingTask1Answer');
+      const t2Area = document.getElementById('writingTask2Answer');
+      const t1Count = document.getElementById('task1WordCount');
+      const t2Count = document.getElementById('task2WordCount');
+
+      if (nameInput) nameInput.value = '';
+      if (progSelect) progSelect.value = '';
+      if (t1Area) { t1Area.value = ''; t1Area.disabled = false; }
+      if (t2Area) { t2Area.value = ''; t2Area.disabled = false; }
+      if (t1Count) t1Count.textContent = '0';
+      if (t2Count) t2Count.textContent = '0';
+
+      try {
+        localStorage.removeItem(Storage.getKey('writing', 'draft_task1'));
+        localStorage.removeItem(Storage.getKey('writing', 'draft_task2'));
+      } catch (e) {}
+
+      currentWritingSubmissionId = null;
     }
 
     // 4. Reset Timer display
@@ -1792,18 +1859,71 @@
     }
 
     // -------------------------------------------------------------
-    // WRITING 60-MINUTE TIMER & SUBMISSION
+    // WRITING WORKSPACE & GOOGLE APPS SCRIPT SUBMISSION
     // -------------------------------------------------------------
-    const writingStatus = Storage.get('writing', 'status', 'not_started');
+    const WRITING_GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxVehjdaBC6Du7xTO74jM0Q-eGs8I-oHVOkqE-s6graogqou5DNKnNzxPe9xxAU8x51Wg/exec';
+    let currentWritingSubmissionId = null;
+    let isSubmittingWriting = false;
+
+    function countWords(str) {
+      if (!str) return 0;
+      const matches = str.trim().match(/\S+/g);
+      return matches ? matches.length : 0;
+    }
+
+    function getOrCreateWritingSubmissionId() {
+      if (!currentWritingSubmissionId) {
+        const rand = Math.random().toString(36).substring(2, 8).toUpperCase();
+        currentWritingSubmissionId = 'ETIPS-WR-B' + ACTIVE_BATCH + '-' + Date.now() + '-' + rand;
+      }
+      return currentWritingSubmissionId;
+    }
+
+    const writingStudentNameInput = document.getElementById('writingStudentName');
+    const writingProgramSelect = document.getElementById('writingProgram');
+    const writingTask1Textarea = document.getElementById('writingTask1Answer');
+    const writingTask2Textarea = document.getElementById('writingTask2Answer');
+    const task1WordCountElem = document.getElementById('task1WordCount');
+    const task2WordCountElem = document.getElementById('task2WordCount');
+
+    // 1. Mandatory Identity: ALWAYS reset/empty on load. NEVER saved in storage.
+    if (writingStudentNameInput) writingStudentNameInput.value = '';
+    if (writingProgramSelect) writingProgramSelect.value = '';
+
+    // 2. Draft Answers: Restore & Autosave only for Task 1 and Task 2
+    if (writingTask1Textarea) {
+      const savedTask1 = Storage.get('writing', 'draft_task1', '');
+      if (savedTask1) {
+        writingTask1Textarea.value = savedTask1;
+        if (task1WordCountElem) task1WordCountElem.textContent = countWords(savedTask1);
+      }
+      writingTask1Textarea.addEventListener('input', function () {
+        const val = writingTask1Textarea.value;
+        Storage.set('writing', 'draft_task1', val);
+        if (task1WordCountElem) task1WordCountElem.textContent = countWords(val);
+      });
+    }
+
+    if (writingTask2Textarea) {
+      const savedTask2 = Storage.get('writing', 'draft_task2', '');
+      if (savedTask2) {
+        writingTask2Textarea.value = savedTask2;
+        if (task2WordCountElem) task2WordCountElem.textContent = countWords(savedTask2);
+      }
+      writingTask2Textarea.addEventListener('input', function () {
+        const val = writingTask2Textarea.value;
+        Storage.set('writing', 'draft_task2', val);
+        if (task2WordCountElem) task2WordCountElem.textContent = countWords(val);
+      });
+    }
+
+    // Timer setup
     initSectionTimer('writing', 'timerWriting', function () {
       notifyTimeExpired('writing');
     });
 
     const btnStartWriting = document.getElementById('btnStartWriting');
     if (btnStartWriting) {
-      if (writingStatus === 'in_progress') {
-        btnStartWriting.style.display = 'none';
-      }
       btnStartWriting.addEventListener('click', function () {
         startTimer('writing', 'timerWriting', function () {
           notifyTimeExpired('writing');
@@ -1812,33 +1932,214 @@
       });
     }
 
+    // Submit handler
     const btnSubmitWriting = document.getElementById('btnSubmitWriting');
     if (btnSubmitWriting) {
       btnSubmitWriting.addEventListener('click', function () {
-        if (Storage.get('writing', 'status', 'not_started') === 'submitted') return;
-        showConfirmModal('writing', function () {
-          Storage.set('writing', 'status', 'submitted');
+        if (isSubmittingWriting) return;
+
+        const nameVal = writingStudentNameInput ? writingStudentNameInput.value.trim() : '';
+        const programVal = writingProgramSelect ? writingProgramSelect.value.trim() : '';
+        const task1Ans = writingTask1Textarea ? writingTask1Textarea.value.trim() : '';
+        const task2Ans = writingTask2Textarea ? writingTask2Textarea.value.trim() : '';
+
+        // Validation
+        if (!nameVal) {
+          showToast('⚠️ Harap isi Nama Lengkap Siswa terlebih dahulu.', 4000);
+          if (writingStudentNameInput) {
+            writingStudentNameInput.focus();
+            writingStudentNameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          return;
+        }
+
+        if (!programVal) {
+          showToast('⚠️ Harap pilih Program resmi IELTS terlebih dahulu.', 4000);
+          if (writingProgramSelect) {
+            writingProgramSelect.focus();
+            writingProgramSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          return;
+        }
+
+        if (!task1Ans && !task2Ans) {
+          showToast('⚠️ Harap isi jawaban Task 1 atau Task 2 sebelum mengumpulkan.', 4000);
+          if (writingTask1Textarea) writingTask1Textarea.focus();
+          return;
+        }
+
+        const task1Words = countWords(task1Ans);
+        const task2Words = countWords(task2Ans);
+
+        // Show confirmation modal
+        const confirmMsg = `
+          <div style="text-align: left; line-height: 1.6;">
+            <p><strong>Konfirmasi Pengumpulan Writing:</strong></p>
+            <ul style="margin: 8px 0 12px 18px; font-size: 0.9rem;">
+              <li><strong>Nama Siswa:</strong> ${nameVal}</li>
+              <li><strong>Program:</strong> ${programVal}</li>
+              <li><strong>Task 1:</strong> ${task1Words} kata</li>
+              <li><strong>Task 2:</strong> ${task2Words} kata</li>
+            </ul>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              Jawaban akan dikirim ke backend Google Apps Script, dicatat di spreadsheet, dan berkas DOCX akan tersimpan di Google Drive instruktur.
+            </p>
+          </div>
+        `;
+
+        const modal = document.getElementById('examConfirmModal');
+        const msgElem = document.getElementById('confirmModalMessage');
+        const btnProceed = document.getElementById('btnConfirmProceed');
+        const btnCancel = document.getElementById('btnConfirmCancel');
+
+        if (modal && msgElem && btnProceed && btnCancel) {
+          msgElem.innerHTML = confirmMsg;
+          modal.classList.add('open');
+
+          const cleanup = function () {
+            modal.classList.remove('open');
+            btnProceed.removeEventListener('click', handleProceed);
+            btnCancel.removeEventListener('click', handleCancel);
+          };
+
+          const handleCancel = function () {
+            cleanup();
+          };
+
+          const handleProceed = async function () {
+            cleanup();
+            await executeWritingSubmission(nameVal, programVal, task1Ans, task2Ans, task1Words, task2Words);
+          };
+
+          btnProceed.addEventListener('click', handleProceed);
+          btnCancel.addEventListener('click', handleCancel);
+        } else {
+          // Fallback if modal elements missing
+          if (confirm('Kumpulkan jawaban Writing sekarang?')) {
+            executeWritingSubmission(nameVal, programVal, task1Ans, task2Ans, task1Words, task2Words);
+          }
+        }
+      });
+    }
+
+    async function executeWritingSubmission(nameVal, programVal, task1Ans, task2Ans, task1Words, task2Words) {
+      if (isSubmittingWriting) return;
+      isSubmittingWriting = true;
+
+      const subId = getOrCreateWritingSubmissionId();
+      const payload = {
+        submissionId: subId,
+        studentName: nameVal,
+        program: programVal,
+        task1Question: 'IELTS Academic Writing Task 1 — Batch ' + ACTIVE_BATCH,
+        task1Answer: task1Ans,
+        task2Question: 'IELTS Academic Writing Task 2 — Batch ' + ACTIVE_BATCH,
+        task2Answer: task2Ans
+      };
+
+      if (btnSubmitWriting) {
+        btnSubmitWriting.disabled = true;
+        btnSubmitWriting.classList.add('disabled');
+        btnSubmitWriting.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim ke Server...';
+      }
+
+      showToast('⏳ Sedang mengirim jawaban Writing ke Google Drive & Spreadsheet...', 5000);
+
+      try {
+        const response = await fetch(WRITING_GAS_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(payload),
+          redirect: 'follow'
+        });
+
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status + ' ' + response.statusText);
+        }
+
+        const data = await response.json();
+        console.log('[Writing Submission Result]:', data);
+
+        if (data && data.success) {
+          const finishedSubId = subId;
+          // Clear currentWritingSubmissionId on success so future submissions generate a new one
+          currentWritingSubmissionId = null;
+
+          // Stop timer
           if (activeIntervals.writing) {
             clearInterval(activeIntervals.writing);
             delete activeIntervals.writing;
           }
-          lockWritingSection();
-          const wordData = { task1Words: 0, task2Words: 0 };
-          Storage.set('writing', 'result', wordData);
-          renderWritingResults('writingResultsArea', wordData);
+
+          // Render result confirmation card
+          renderWritingResults('writingResultsArea', {
+            submissionId: finishedSubId,
+            studentName: nameVal,
+            program: programVal,
+            task1Words: task1Words,
+            task2Words: task2Words,
+            fileUrl: data.fileUrl || '',
+            fileName: data.fileName || '',
+            timestamp: data.timestamp || new Date().toLocaleString('id-ID'),
+            isDuplicate: Boolean(data.duplicate)
+          });
+
+          // Reset identity & answers completely
+          if (writingStudentNameInput) writingStudentNameInput.value = '';
+          if (writingProgramSelect) writingProgramSelect.value = '';
+          if (writingTask1Textarea) writingTask1Textarea.value = '';
+          if (writingTask2Textarea) writingTask2Textarea.value = '';
+          if (task1WordCountElem) task1WordCountElem.textContent = '0';
+          if (task2WordCountElem) task2WordCountElem.textContent = '0';
+
+          // Clear local storage drafts
+          try {
+            localStorage.removeItem(Storage.getKey('writing', 'draft_task1'));
+            localStorage.removeItem(Storage.getKey('writing', 'draft_task2'));
+            localStorage.removeItem(Storage.getKey('writing', 'timer'));
+          } catch (e) {
+            console.warn('Storage draft clear error:', e);
+          }
+
+          // Re-enable submit button
+          isSubmittingWriting = false;
+          if (btnSubmitWriting) {
+            btnSubmitWriting.disabled = false;
+            btnSubmitWriting.classList.remove('disabled');
+            btnSubmitWriting.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Writing';
+          }
+
+          // Banner badge
+          const bannerBadge = document.getElementById('writingStatusBadge');
+          if (bannerBadge) {
+            bannerBadge.className = 'status-badge success';
+            bannerBadge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Terkirim';
+          }
+
+          showToast('✅ Berhasil! Jawaban Writing telah tersimpan di Google Drive.', 6000);
 
           const resultsElem = document.getElementById('writingResultsArea');
           if (resultsElem) {
             resultsElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
-        });
-      });
-    }
+        } else {
+          throw new Error((data && data.message) ? data.message : 'Server mengembalikan status gagal.');
+        }
+      } catch (err) {
+        console.error('[Writing Submission Error]:', err);
+        isSubmittingWriting = false;
 
-    if (writingStatus === 'submitted') {
-      lockWritingSection();
-      const savedWriting = Storage.get('writing', 'result', { task1Words: 0, task2Words: 0 });
-      renderWritingResults('writingResultsArea', savedWriting);
+        // On failure: retain answers, identity, and submissionId for retry
+        if (btnSubmitWriting) {
+          btnSubmitWriting.disabled = false;
+          btnSubmitWriting.classList.remove('disabled');
+          btnSubmitWriting.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Coba Kirim Ulang (Retry)';
+        }
+
+        showToast('❌ Gagal mengirim: ' + (err.message || 'Terjadi kesalahan jaringan') + '. Data Anda tetap aman. Silakan klik Coba Kirim Ulang.', 8000);
+      }
     }
 
     // -------------------------------------------------------------
