@@ -161,12 +161,16 @@
       ? 'assets/data/listening/batch 01/question batch 01 new.pdf'
       : (batchNum >= 2 && batchNum <= 4)
       ? 'assets/data/listening/batch ' + id + '/question batch ' + id + '.pdf'
+      : (batchNum >= 5 && batchNum <= 8)
+      ? 'assets/data/listening/batch ' + id + '/batch ' + id + '.pdf'
       : '';
     const readingPdfUrl = (batchNum >= 1 && batchNum <= 4)
       ? 'assets/data/reading/batch ' + id + '/question batch ' + id + '.pdf'
+      : (batchNum >= 5 && batchNum <= 8)
+      ? 'assets/data/reading/batch ' + id + '/batch ' + id + '.pdf'
       : '';
-    const writingPdfUrl = (batchNum >= 1 && batchNum <= 4) ? 'assets/data/writing/batch ' + id + '/batch ' + id + '.pdf' : '';
-    const speakingPdfUrl = (batchNum >= 1 && batchNum <= 4) ? 'assets/data/speaking/batch ' + id + '/batch ' + id + '.pdf' : '';
+    const writingPdfUrl = (batchNum >= 1 && batchNum <= 8) ? 'assets/data/writing/batch ' + id + '/batch ' + id + '.pdf' : '';
+    const speakingPdfUrl = (batchNum >= 1 && batchNum <= 8) ? 'assets/data/speaking/batch ' + id + '/batch ' + id + '.pdf' : '';
 
     return {
       id: id,
@@ -398,6 +402,410 @@
   // --- Batch 01: Writing & Speaking Question PDFs ---
   BATCHES_CONFIG['01'].writingPdfUrl = 'assets/data/writing/batch 01/batch 01.pdf';
   BATCHES_CONFIG['01'].speakingPdfUrl = 'assets/data/speaking/batch 01/batch 01.pdf';
+
+  // =========================================================
+  // BATCH 05 — Cambridge IELTS 14 Test 1 (C14T1)
+  // Listening: Sections 1–4, Q1–40
+  // Audio: assets/Audio/Listening/Batch 05/C14T1  -SECTION -N.mp3
+  // Question PDF (Listening): assets/data/listening/batch 05/batch 05.pdf
+  // Question PDF (Reading): assets/data/reading/batch 05/batch 05.pdf
+  // Question PDF (Writing): assets/data/writing/batch 05/batch 05.pdf
+  // Question PDF (Speaking): assets/data/speaking/batch 05/batch 05.pdf
+  // =========================================================
+  BATCHES_CONFIG['05'].questionPdfUrl = 'assets/data/listening/batch 05/batch 05.pdf';
+  BATCHES_CONFIG['05'].readingPdfUrl = 'assets/data/reading/batch 05/batch 05.pdf';
+  BATCHES_CONFIG['05'].writingPdfUrl = 'assets/data/writing/batch 05/batch 05.pdf';
+  BATCHES_CONFIG['05'].speakingPdfUrl = 'assets/data/speaking/batch 05/batch 05.pdf';
+  BATCHES_CONFIG['05'].readingMode = 'academic';
+
+  BATCHES_CONFIG['05'].listeningAnswerKeys = {
+    '1':  'Canadian',
+    '2':  'furniture',
+    '3':  'Park',
+    '4':  ['250', '250 sterling', '£250', '250 pounds'],
+    '5':  'phone',
+    '6':  ['10 September', '10th September', '10th of September', 'September 10', 'September 10th'],
+    '7':  'museum',
+    '8':  'time',
+    '9':  ['blond', 'blonde'],
+    '10': ['87954 82361', '8795482361'],
+    '11': ['A', 'C'],
+    '12': ['A', 'C'],
+    '13': ['B', 'E'],
+    '14': ['B', 'E'],
+    '15': 'B',
+    '16': 'B',
+    '17': 'C',
+    '18': 'A',
+    '19': 'A',
+    '20': 'C',
+    '21': 'B',
+    '22': 'A',
+    '23': 'C',
+    '24': 'B',
+    '25': 'A',
+    '26': 'B',
+    '27': 'A',
+    '28': 'F',
+    '29': 'G',
+    '30': 'C',
+    '31': 'industry',
+    '32': 'constant',
+    '33': 'direction',
+    '34': 'floor',
+    '35': 'predictable',
+    '36': 'bay',
+    '37': 'gates',
+    '38': 'fuel',
+    '39': 'jobs',
+    '40': 'migration'
+  };
+
+  BATCHES_CONFIG['05'].readingAnswerKeys = {
+    '1':  'creativity',
+    '2':  'rules',
+    '3':  'cities',
+    '4':  ['traffic', 'crime'],
+    '5':  ['traffic', 'crime'],
+    '6':  'competition',
+    '7':  'evidence',
+    '8':  'life',
+    '9':  'TRUE',
+    '10': 'TRUE',
+    '11': 'NOT GIVEN',
+    '12': 'FALSE',
+    '13': 'TRUE',
+    '14': 'E',
+    '15': 'C',
+    '16': 'F',
+    '17': 'C',
+    '18': 'A',
+    '19': ['B', 'D'],
+    '20': ['B', 'D'],
+    '21': ['D', 'E'],
+    '22': ['D', 'E'],
+    '23': 'activists',
+    '24': 'consumerism',
+    '25': 'leaflets',
+    '26': 'police',
+    '27': 'E',
+    '28': 'D',
+    '29': 'B',
+    '30': 'D',
+    '31': 'C',
+    '32': 'YES',
+    '33': 'NO',
+    '34': 'NO',
+    '35': 'NOT GIVEN',
+    '36': 'restaurants',
+    '37': 'performance',
+    '38': 'turnover',
+    '39': 'goals',
+    '40': 'characteristics'
+  };
+
+  // =========================================================
+  // BATCH 06 — Cambridge IELTS 14 Test 2 (C14T2)
+  // Listening: Sections 1–4, Q1–40
+  // Audio: assets/Audio/Listening/Batch 06/C14T2  -SECTION -N.mp3
+  // Question PDF (Listening): assets/data/listening/batch 06/batch 06.pdf
+  // Question PDF (Reading): assets/data/reading/batch 06/batch 06.pdf
+  // Question PDF (Writing): assets/data/writing/batch 06/batch 06.pdf
+  // Question PDF (Speaking): assets/data/speaking/batch 06/batch 06.pdf
+  // =========================================================
+  BATCHES_CONFIG['06'].questionPdfUrl = 'assets/data/listening/batch 06/batch 06.pdf';
+  BATCHES_CONFIG['06'].readingPdfUrl = 'assets/data/reading/batch 06/batch 06.pdf';
+  BATCHES_CONFIG['06'].writingPdfUrl = 'assets/data/writing/batch 06/batch 06.pdf';
+  BATCHES_CONFIG['06'].speakingPdfUrl = 'assets/data/speaking/batch 06/batch 06.pdf';
+  BATCHES_CONFIG['06'].readingMode = 'academic';
+
+  BATCHES_CONFIG['06'].listeningAnswerKeys = {
+    '1':  ['219 442 9785', '2194429785', '219-442-9785'],
+    '2':  ['10 October', '10th October', '10th of October', 'October 10', 'October 10th'],
+    '3':  'manager',
+    '4':  'Cawley',
+    '5':  'knee',
+    '6':  ['3 weeks', 'three weeks'],
+    '7':  'tennis',
+    '8':  'running',
+    '9':  'shoulder',
+    '10': 'vitamins',
+    '11': 'B',
+    '12': 'C',
+    '13': 'C',
+    '14': 'B',
+    '15': 'A',
+    '16': 'H',
+    '17': 'D',
+    '18': 'F',
+    '19': 'A',
+    '20': 'E',
+    '21': 'B',
+    '22': 'C',
+    '23': 'A',
+    '24': 'A',
+    '25': 'E',
+    '26': 'D',
+    '27': 'A',
+    '28': 'H',
+    '29': 'G',
+    '30': 'C',
+    '31': 'dances',
+    '32': 'survival',
+    '33': 'clouds',
+    '34': 'festivals',
+    '35': 'comets',
+    '36': 'sky',
+    '37': 'instruments',
+    '38': 'thermometer',
+    '39': 'storms',
+    '40': 'telegraph'
+  };
+
+  BATCHES_CONFIG['06'].readingAnswerKeys = {
+    '1':  'FALSE',
+    '2':  'TRUE',
+    '3':  'NOT GIVEN',
+    '4':  'FALSE',
+    '5':  'NOT GIVEN',
+    '6':  'TRUE',
+    '7':  'FALSE',
+    '8':  'TRUE',
+    '9':  'merchant',
+    '10': 'equipment',
+    '11': 'gifts',
+    '12': 'canoe',
+    '13': 'mountains',
+    '14': 'F',
+    '15': 'C',
+    '16': 'E',
+    '17': 'D',
+    '18': 'B',
+    '19': ['design', 'designs'],
+    '20': 'pathogens',
+    '21': 'tuberculosis',
+    '22': 'wards',
+    '23': 'communal',
+    '24': 'public',
+    '25': 'miasmas',
+    '26': 'cholera',
+    '27': ['vi', 'VI'],
+    '28': ['i', 'I'],
+    '29': ['iii', 'III'],
+    '30': ['ii', 'II'],
+    '31': ['ix', 'IX'],
+    '32': ['vii', 'VII'],
+    '33': ['iv', 'IV'],
+    '34': ['viii', 'VIII'],
+    '35': 'productive',
+    '36': 'perfectionists',
+    '37': 'dissatisfied',
+    '38': 'TRUE',
+    '39': 'FALSE',
+    '40': 'NOT GIVEN'
+  };
+
+  // =========================================================
+  // BATCH 07 — Cambridge IELTS 14 Test 3 (C14T3)
+  // Listening: Sections 1–4, Q1–40
+  // Audio: assets/Audio/Listening/Batch 07/C14T3  -SECTION -N.mp3
+  // Question PDF (Listening): assets/data/listening/batch 07/batch 07.pdf
+  // Question PDF (Reading): assets/data/reading/batch 07/batch 07.pdf
+  // Question PDF (Writing): assets/data/writing/batch 07/batch 07.pdf
+  // Question PDF (Speaking): assets/data/speaking/batch 07/batch 07.pdf
+  // =========================================================
+  BATCHES_CONFIG['07'].questionPdfUrl = 'assets/data/listening/batch 07/batch 07.pdf';
+  BATCHES_CONFIG['07'].readingPdfUrl = 'assets/data/reading/batch 07/batch 07.pdf';
+  BATCHES_CONFIG['07'].writingPdfUrl = 'assets/data/writing/batch 07/batch 07.pdf';
+  BATCHES_CONFIG['07'].speakingPdfUrl = 'assets/data/speaking/batch 07/batch 07.pdf';
+  BATCHES_CONFIG['07'].readingMode = 'academic';
+
+  BATCHES_CONFIG['07'].listeningAnswerKeys = {
+    '1':  'Tesla',
+    '2':  'microphone',
+    '3':  'exhibition',
+    '4':  'wifi',
+    '5':  '45',
+    '6':  '135',
+    '7':  'pool',
+    '8':  'airport',
+    '9':  'sea',
+    '10': 'clubs',
+    '11': ['A', 'E'],
+    '12': ['A', 'E'],
+    '13': ['B', 'F'],
+    '14': ['B', 'F'],
+    '15': 'F',
+    '16': 'A',
+    '17': 'E',
+    '18': 'G',
+    '19': 'D',
+    '20': 'C',
+    '21': '50',
+    '22': 'regional',
+    '23': 'carnival',
+    '24': 'drummer',
+    '25': 'film',
+    '26': 'parade',
+    '27': 'D',
+    '28': 'B',
+    '29': 'E',
+    '30': 'F',
+    '31': 'violin',
+    '32': 'energy',
+    '33': 'complex',
+    '34': 'opera',
+    '35': 'disturbing',
+    '36': 'clarinet',
+    '37': 'diversity',
+    '38': 'physics',
+    '39': 'dance',
+    '40': 'Olympics'
+  };
+
+  BATCHES_CONFIG['07'].readingAnswerKeys = {
+    '1':  'B',
+    '2':  'A',
+    '3':  'D',
+    '4':  'NOT GIVEN',
+    '5':  'NO',
+    '6':  'YES',
+    '7':  'B',
+    '8':  'C',
+    '9':  'B',
+    '10': 'A',
+    '11': 'A',
+    '12': 'C',
+    '13': 'A',
+    '14': 'C',
+    '15': 'H',
+    '16': 'A',
+    '17': 'F',
+    '18': 'I',
+    '19': 'B',
+    '20': 'E',
+    '21': ['B', 'C'],
+    '22': ['B', 'C'],
+    '23': 'ecology',
+    '24': 'prey',
+    '25': 'habitats',
+    '26': 'antibiotics',
+    '27': 'B',
+    '28': 'G',
+    '29': 'F',
+    '30': 'E',
+    '31': 'C',
+    '32': 'NO',
+    '33': 'YES',
+    '34': 'NOT GIVEN',
+    '35': 'NO',
+    '36': 'YES',
+    '37': 'encouraging',
+    '38': 'desire',
+    '39': 'autonomy',
+    '40': 'targeted'
+  };
+
+  // =========================================================
+  // BATCH 08 — Cambridge IELTS 14 Test 4 (C14T4)
+  // Listening: Sections 1–4, Q1–40
+  // Audio: assets/Audio/Listening/Batch 08/C14T4  -SECTION -N.mp3
+  // Question PDF (Listening): assets/data/listening/batch 08/batch 08.pdf
+  // Question PDF (Reading): assets/data/reading/batch 08/batch 08.pdf
+  // Question PDF (Writing): assets/data/writing/batch 08/batch 08.pdf
+  // Question PDF (Speaking): assets/data/speaking/batch 08/batch 08.pdf
+  // =========================================================
+  BATCHES_CONFIG['08'].questionPdfUrl = 'assets/data/listening/batch 08/batch 08.pdf';
+  BATCHES_CONFIG['08'].readingPdfUrl = 'assets/data/reading/batch 08/batch 08.pdf';
+  BATCHES_CONFIG['08'].writingPdfUrl = 'assets/data/writing/batch 08/batch 08.pdf';
+  BATCHES_CONFIG['08'].speakingPdfUrl = 'assets/data/speaking/batch 08/batch 08.pdf';
+  BATCHES_CONFIG['08'].readingMode = 'academic';
+
+  BATCHES_CONFIG['08'].listeningAnswerKeys = {
+    '1':  '85',
+    '2':  'roses',
+    '3':  'trees',
+    '4':  'stage',
+    '5':  'speech',
+    '6':  'support',
+    '7':  'cabins',
+    '8':  'C',
+    '9':  'A',
+    '10': 'B',
+    '11': 'G',
+    '12': 'D',
+    '13': 'A',
+    '14': 'E',
+    '15': 'F',
+    '16': 'B',
+    '17': ['B', 'D'],
+    '18': ['B', 'D'],
+    '19': ['A', 'D'],
+    '20': ['A', 'D'],
+    '21': 'A',
+    '22': 'C',
+    '23': 'A',
+    '24': 'B',
+    '25': 'B',
+    '26': 'F',
+    '27': 'E',
+    '28': 'C',
+    '29': 'B',
+    '30': 'G',
+    '31': 'spring',
+    '32': 'tools',
+    '33': 'maps',
+    '34': 'heavy',
+    '35': 'marble',
+    '36': 'light',
+    '37': ['camera', 'cameras'],
+    '38': 'medical',
+    '39': 'eyes',
+    '40': 'wine'
+  };
+
+  BATCHES_CONFIG['08'].readingAnswerKeys = {
+    '1':  ['four', '4'],
+    '2':  'young',
+    '3':  'food',
+    '4':  'light',
+    '5':  'aggressively',
+    '6':  'location',
+    '7':  'neurons',
+    '8':  'chemicals',
+    '9':  'FALSE',
+    '10': 'TRUE',
+    '11': 'FALSE',
+    '12': 'NOT GIVEN',
+    '13': 'TRUE',
+    '14': 'B',
+    '15': 'E',
+    '16': 'C',
+    '17': 'A',
+    '18': 'TRUE',
+    '19': 'TRUE',
+    '20': 'NOT GIVEN',
+    '21': 'FALSE',
+    '22': 'NOT GIVEN',
+    '23': ['B', 'D'],
+    '24': ['B', 'D'],
+    '25': ['B', 'E'],
+    '26': ['B', 'E'],
+    '27': 'FALSE',
+    '28': 'NOT GIVEN',
+    '29': 'FALSE',
+    '30': 'TRUE',
+    '31': 'FALSE',
+    '32': 'TRUE',
+    '33': 'NOT GIVEN',
+    '34': 'large',
+    '35': 'microplastic',
+    '36': 'populations',
+    '37': 'concentrations',
+    '38': 'predators',
+    '39': 'disasters',
+    '40': 'A'
+  };
 
   // --- 4. REUSABLE CONFIGURATION METHODS ---
   const IeltsPracticeConfig = {
