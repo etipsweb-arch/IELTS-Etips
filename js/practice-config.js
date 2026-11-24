@@ -163,14 +163,34 @@
       ? 'assets/data/listening/batch ' + id + '/question batch ' + id + '.pdf'
       : (batchNum >= 5 && batchNum <= 8)
       ? 'assets/data/listening/batch ' + id + '/batch ' + id + '.pdf'
+      : (batchNum === 9)
+      ? 'assets/data/listening/batch 09/batch 09.pdf'
+      : (batchNum >= 10 && batchNum <= 12)
+      ? 'assets/data/listening/batch 0' + batchNum + '/batch 0' + batchNum + '.pdf'
       : '';
     const readingPdfUrl = (batchNum >= 1 && batchNum <= 4)
       ? 'assets/data/reading/batch ' + id + '/question batch ' + id + '.pdf'
       : (batchNum >= 5 && batchNum <= 8)
       ? 'assets/data/reading/batch ' + id + '/batch ' + id + '.pdf'
+      : (batchNum === 9)
+      ? 'assets/data/reading/batch 09/batch 09.pdf'
+      : (batchNum >= 10 && batchNum <= 12)
+      ? 'assets/data/reading/batch 0' + batchNum + '/batch 0' + batchNum + '.pdf'
       : '';
-    const writingPdfUrl = (batchNum >= 1 && batchNum <= 8) ? 'assets/data/writing/batch ' + id + '/batch ' + id + '.pdf' : '';
-    const speakingPdfUrl = (batchNum >= 1 && batchNum <= 8) ? 'assets/data/speaking/batch ' + id + '/batch ' + id + '.pdf' : '';
+    const writingPdfUrl = (batchNum >= 1 && batchNum <= 8)
+      ? 'assets/data/writing/batch ' + id + '/batch ' + id + '.pdf'
+      : (batchNum === 9)
+      ? 'assets/data/writing/batch 09/batch 09.pdf'
+      : (batchNum >= 10 && batchNum <= 12)
+      ? 'assets/data/writing/batch 0' + batchNum + '/batch 0' + batchNum + '.pdf'
+      : '';
+    const speakingPdfUrl = (batchNum >= 1 && batchNum <= 8)
+      ? 'assets/data/speaking/batch ' + id + '/batch ' + id + '.pdf'
+      : (batchNum === 9)
+      ? 'assets/data/speaking/batch 09/batch 09.pdf'
+      : (batchNum >= 10 && batchNum <= 12)
+      ? 'assets/data/speaking/batch 0' + batchNum + '/batch 0' + batchNum + '.pdf'
+      : '';
 
     return {
       id: id,
@@ -1096,6 +1116,394 @@
     '38': 'predators',
     '39': 'disasters',
     '40': 'A'
+  };
+
+  // =========================================================
+  // BATCH 09 — Cambridge IELTS 15 Test 1 (C15T1)
+  // Listening: Sections 1–4, Q1–40
+  // Reading: Passages 1–3, Q1–40
+  // =========================================================
+  BATCHES_CONFIG['09'].questionPdfUrl = 'assets/data/listening/batch 09/batch 09.pdf';
+  BATCHES_CONFIG['09'].readingPdfUrl = 'assets/data/reading/batch 09/batch 09.pdf';
+  BATCHES_CONFIG['09'].writingPdfUrl = 'assets/data/writing/batch 09/batch 09.pdf';
+  BATCHES_CONFIG['09'].speakingPdfUrl = 'assets/data/speaking/batch 09/batch 09.pdf';
+  BATCHES_CONFIG['09'].readingMode = 'academic';
+
+  BATCHES_CONFIG['09'].listeningAnswerKeys = {
+    '1':  'Jamieson',
+    '2':  'afternoon',
+    '3':  'communication',
+    '4':  'week',
+    '5':  ['10', 'ten'],
+    '6':  'suit',
+    '7':  'passport',
+    '8':  'personality',
+    '9':  'feedback',
+    '10': 'time',
+    '11': 'A',
+    '12': 'B',
+    '13': 'A',
+    '14': 'C',
+    '15': 'river',
+    '16': '1422',
+    '17': 'top',
+    '18': 'pass',
+    '19': 'steam',
+    '20': 'capital',
+    '21': 'G',
+    '22': 'F',
+    '23': 'A',
+    '24': 'E',
+    '25': 'B',
+    '26': 'C',
+    '27': 'C',
+    '28': 'A',
+    '29': ['B', 'D'],
+    '30': ['B', 'D'],
+    '31': 'shelter',
+    '32': 'oil',
+    '33': 'roads',
+    '34': 'insects',
+    '35': ['grass', 'grasses'],
+    '36': 'water',
+    '37': 'soil',
+    '38': 'dry',
+    '39': 'simple',
+    '40': ['nest', 'nests']
+  };
+
+  BATCHES_CONFIG['09'].readingAnswerKeys = {
+    '1':  'oval',
+    '2':  'husk',
+    '3':  'seed',
+    '4':  'mace',
+    '5':  ['FALSE', 'F'],
+    '6':  ['NOT GIVEN', 'NG'],
+    '7':  ['TRUE', 'T'],
+    '8':  'Arabs',
+    '9':  'plague',
+    '10': 'lime',
+    '11': 'Run',
+    '12': 'Mauritius',
+    '13': 'tsunami',
+    '14': 'C',
+    '15': 'B',
+    '16': 'E',
+    '17': 'G',
+    '18': 'D',
+    '19': 'human error',
+    '20': ['car sharing', 'car-sharing'],
+    '21': 'ownership',
+    '22': 'mileage',
+    '23': ['C', 'D'],
+    '24': ['C', 'D'],
+    '25': ['A', 'E'],
+    '26': ['A', 'E'],
+    '27': 'A',
+    '28': 'C',
+    '29': 'C',
+    '30': 'D',
+    '31': 'A',
+    '32': 'B',
+    '33': 'E',
+    '34': 'A',
+    '35': 'D',
+    '36': 'E',
+    '37': 'B',
+    '38': ['unique expeditions', 'expeditions'],
+    '39': ['uncontacted', 'isolated'],
+    '40': ['land surface', 'surface']
+  };
+
+  // =========================================================
+  // BATCH 10 — Cambridge IELTS 15 Test 2 (C15T2)
+  // Listening: Sections 1–4, Q1–40
+  // Reading: Passages 1–3, Q1–40
+  // =========================================================
+  BATCHES_CONFIG['10'].questionPdfUrl = 'assets/data/listening/batch 010/batch 010.pdf';
+  BATCHES_CONFIG['10'].readingPdfUrl = 'assets/data/reading/batch 010/batch 010.pdf';
+  BATCHES_CONFIG['10'].writingPdfUrl = 'assets/data/writing/batch 010/batch 010.pdf';
+  BATCHES_CONFIG['10'].speakingPdfUrl = 'assets/data/speaking/batch 010/batch 010.pdf';
+  BATCHES_CONFIG['10'].readingMode = 'academic';
+
+  BATCHES_CONFIG['10'].listeningAnswerKeys = {
+    '1':  'Eustatis',
+    '2':  'review',
+    '3':  'dance',
+    '4':  'Chat',
+    '5':  'healthy',
+    '6':  'posters',
+    '7':  'wood',
+    '8':  'lake',
+    '9':  'insects',
+    '10': 'blog',
+    '11': 'C',
+    '12': 'A',
+    '13': 'B',
+    '14': 'C',
+    '15': 'E',
+    '16': 'C',
+    '17': 'B',
+    '18': 'A',
+    '19': 'G',
+    '20': 'D',
+    '21': ['B', 'D'],
+    '22': ['B', 'D'],
+    '23': ['B', 'C'],
+    '24': ['B', 'C'],
+    '25': 'G',
+    '26': 'B',
+    '27': 'D',
+    '28': 'C',
+    '29': 'H',
+    '30': 'F',
+    '31': 'irrigation',
+    '32': 'women',
+    '33': ['wire', 'wires'],
+    '34': ['seed', 'seeds'],
+    '35': 'posts',
+    '36': 'transport',
+    '37': 'preservation',
+    '38': ['fish', 'fishes'],
+    '39': 'bees',
+    '40': 'design'
+  };
+
+  BATCHES_CONFIG['10'].readingAnswerKeys = {
+    '1':  'B',
+    '2':  'C',
+    '3':  'F',
+    '4':  'D',
+    '5':  'E',
+    '6':  'A',
+    '7':  'safety',
+    '8':  'traffic',
+    '9':  'carriageway',
+    '10': 'mobile',
+    '11': 'dangerous',
+    '12': 'communities',
+    '13': 'healthy',
+    '14': 'F',
+    '15': 'A',
+    '16': 'D',
+    '17': 'A',
+    '18': 'genetic traits',
+    '19': 'heat loss',
+    '20': 'ears',
+    '21': ['insulating fat', 'fat'],
+    '22': ['carbon emissions', 'emissions'],
+    '23': 'B',
+    '24': 'C',
+    '25': 'A',
+    '26': 'C',
+    '27': 'C',
+    '28': 'A',
+    '29': 'B',
+    '30': 'B',
+    '31': 'D',
+    '32': 'F',
+    '33': 'H',
+    '34': 'C',
+    '35': 'D',
+    '36': 'E',
+    '37': ['NOT GIVEN', 'NG'],
+    '38': ['YES', 'Y'],
+    '39': ['NO', 'N'],
+    '40': ['NO', 'N']
+  };
+
+  // =========================================================
+  // BATCH 11 — Cambridge IELTS 15 Test 3 (C15T3)
+  // Listening: Sections 1–4, Q1–40
+  // Reading: Passages 1–3, Q1–40
+  // =========================================================
+  BATCHES_CONFIG['11'].questionPdfUrl = 'assets/data/listening/batch 011/batch 011.pdf';
+  BATCHES_CONFIG['11'].readingPdfUrl = 'assets/data/reading/batch 011/batch 011.pdf';
+  BATCHES_CONFIG['11'].writingPdfUrl = 'assets/data/writing/batch 011/batch 011.pdf';
+  BATCHES_CONFIG['11'].speakingPdfUrl = 'assets/data/speaking/batch 011/batch 011.pdf';
+  BATCHES_CONFIG['11'].readingMode = 'academic';
+
+  BATCHES_CONFIG['11'].listeningAnswerKeys = {
+    '1':  'furniture',
+    '2':  'meetings',
+    '3':  'diary',
+    '4':  ['detail', 'details'],
+    '5':  ['1 year', 'one year', '1', 'one'],
+    '6':  'deliveries',
+    '7':  'tidy',
+    '8':  'team',
+    '9':  'heavy',
+    '10': 'customer',
+    '11': 'B',
+    '12': 'A',
+    '13': 'C',
+    '14': 'B',
+    '15': 'C',
+    '16': 'B',
+    '17': ['B', 'D'],
+    '18': ['B', 'D'],
+    '19': ['A', 'E'],
+    '20': ['A', 'E'],
+    '21': 'page',
+    '22': 'size',
+    '23': ['graphic', 'graphics'],
+    '24': 'structure',
+    '25': 'purpose',
+    '26': ['assumption', 'assumptions'],
+    '27': 'A',
+    '28': 'C',
+    '29': 'C',
+    '30': 'B',
+    '31': 'mud',
+    '32': 'clay',
+    '33': 'metal',
+    '34': 'hair',
+    '35': ['bath', 'baths'],
+    '36': ['disease', 'diseases'],
+    '37': 'perfume',
+    '38': 'salt',
+    '39': 'science',
+    '40': 'tax'
+  };
+
+  BATCHES_CONFIG['11'].readingAnswerKeys = {
+    '1':  ['TRUE', 'T'],
+    '2':  ['FALSE', 'F'],
+    '3':  ['NOT GIVEN', 'NG'],
+    '4':  ['TRUE', 'T'],
+    '5':  ['NOT GIVEN', 'NG'],
+    '6':  ['FALSE', 'F'],
+    '7':  ['TRUE', 'T'],
+    '8':  'resignation',
+    '9':  'materials',
+    '10': 'miners',
+    '11': 'family',
+    '12': 'collectors',
+    '13': 'income',
+    '14': ['iii', 'III'],
+    '15': ['vi', 'VI'],
+    '16': ['v', 'V'],
+    '17': ['x', 'X'],
+    '18': ['iv', 'IV'],
+    '19': ['viii', 'VIII'],
+    '20': ['i', 'I'],
+    '21': 'wheels',
+    '22': 'film',
+    '23': 'filter',
+    '24': 'waste',
+    '25': 'performance',
+    '26': 'servicing',
+    '27': 'C',
+    '28': 'B',
+    '29': 'F',
+    '30': 'A',
+    '31': 'E',
+    '32': 'D',
+    '33': 'F',
+    '34': 'B',
+    '35': 'C',
+    '36': 'G',
+    '37': 'B',
+    '38': 'D',
+    '39': 'A',
+    '40': 'A'
+  };
+
+  // =========================================================
+  // BATCH 12 — Cambridge IELTS 15 Test 4 (C15T4)
+  // Listening: Sections 1–4, Q1–40
+  // Reading: Passages 1–3, Q1–40
+  // =========================================================
+  BATCHES_CONFIG['12'].questionPdfUrl = 'assets/data/listening/batch 012/batch 012.pdf';
+  BATCHES_CONFIG['12'].readingPdfUrl = 'assets/data/reading/batch 012/batch 012.pdf';
+  BATCHES_CONFIG['12'].writingPdfUrl = 'assets/data/writing/batch 012/batch 012.pdf';
+  BATCHES_CONFIG['12'].speakingPdfUrl = 'assets/data/speaking/batch 012/batch 012.pdf';
+  BATCHES_CONFIG['12'].readingMode = 'academic';
+
+  BATCHES_CONFIG['12'].listeningAnswerKeys = {
+    '1':  'journalist',
+    '2':  'shopping',
+    '3':  'Staunfirth',
+    '4':  'return',
+    '5':  '23.70',
+    '6':  'online',
+    '7':  'delay',
+    '8':  'information',
+    '9':  ['platform', 'platforms'],
+    '10': 'parking',
+    '11': 'D',
+    '12': 'C',
+    '13': 'G',
+    '14': 'H',
+    '15': 'A',
+    '16': 'E',
+    '17': ['A', 'D'],
+    '18': ['A', 'D'],
+    '19': ['A', 'C'],
+    '20': ['A', 'C'],
+    '21': 'B',
+    '22': 'A',
+    '23': 'B',
+    '24': 'A',
+    '25': 'A',
+    '26': 'A',
+    '27': 'B',
+    '28': 'B',
+    '29': 'A',
+    '30': 'C',
+    '31': 'wealth',
+    '32': 'technology',
+    '33': 'power',
+    '34': ['textile', 'textiles'],
+    '35': 'machines',
+    '36': 'newspapers',
+    '37': 'local',
+    '38': 'lighting',
+    '39': 'windows',
+    '40': 'advertising'
+  };
+
+  BATCHES_CONFIG['12'].readingAnswerKeys = {
+    '1':  'water',
+    '2':  'diet',
+    '3':  'drought',
+    '4':  'erosion',
+    '5':  'desert',
+    '6':  ['branches', 'its branches', 'the branches', 'huarango branches'],
+    '7':  ['leaves and bark', 'bark and leaves', 'leaves bark', 'bark leaves', 'leaves and the bark', 'leaves, bark', 'leaves', 'bark'],
+    '8':  ['trunk', 'its trunk', 'the trunk', 'huarango trunk'],
+    '9':  ['NOT GIVEN', 'NG'],
+    '10': ['FALSE', 'F'],
+    '11': ['TRUE', 'T'],
+    '12': ['FALSE', 'F'],
+    '13': ['NOT GIVEN', 'NG'],
+    '14': ['NOT GIVEN', 'NG'],
+    '15': ['FALSE', 'F'],
+    '16': ['TRUE', 'T'],
+    '17': ['FALSE', 'F'],
+    '18': ['FALSE', 'F'],
+    '19': ['TRUE', 'T'],
+    '20': 'words',
+    '21': 'finger',
+    '22': 'direction',
+    '23': 'commands',
+    '24': 'fires',
+    '25': 'technology',
+    '26': 'award',
+    '27': 'D',
+    '28': 'E',
+    '29': 'F',
+    '30': 'H',
+    '31': 'B',
+    '32': 'C',
+    '33': 'D',
+    '34': 'B',
+    '35': ['YES', 'Y'],
+    '36': ['NOT GIVEN', 'NG'],
+    '37': ['NO', 'N'],
+    '38': ['YES', 'Y'],
+    '39': ['NOT GIVEN', 'NG'],
+    '40': 'D'
   };
 
   // --- 4. REUSABLE CONFIGURATION METHODS ---

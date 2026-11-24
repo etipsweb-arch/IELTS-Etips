@@ -40,6 +40,14 @@
             isReady: true,
             statusLabel: 'Audio & Scoring Ready'
           };
+        } else if (batchNum >= 9 && batchNum <= 12) {
+          const testNum = batchNum - 8;
+          return {
+            title: 'Cambridge IELTS 15 Test ' + testNum,
+            desc: 'Latihan Listening Cambridge 15 Test ' + testNum + ' lengkap (Sections 1–4, Q1–40) dengan audio jernih per-section, PDF question paper, dan scoring otomatis.',
+            isReady: true,
+            statusLabel: 'Audio & Scoring Ready'
+          };
         } else {
           return {
             title: 'IELTS Listening Practice ' + String(batchNum).padStart(2, '0'),
@@ -79,6 +87,14 @@
             isReady: true,
             statusLabel: 'Passages & Scoring Ready'
           };
+        } else if (batchNum >= 9 && batchNum <= 12) {
+          const testNum = batchNum - 8;
+          return {
+            title: 'Cambridge IELTS 15 Test ' + testNum + ' (Academic)',
+            desc: 'Latihan Academic Reading Cambridge 15 Test ' + testNum + ' (3 Passages, Q1–40) dengan PDF question paper dan scoring otomatis.',
+            isReady: true,
+            statusLabel: 'Passages & Scoring Ready'
+          };
         } else {
           return {
             title: 'IELTS Reading Practice ' + String(batchNum).padStart(2, '0'),
@@ -111,6 +127,14 @@
             isReady: true,
             statusLabel: 'Tasks 1 & 2 Ready'
           };
+        } else if (batchNum >= 9 && batchNum <= 12) {
+          const testNum = batchNum - 8;
+          return {
+            title: 'Cambridge IELTS 15 Test ' + testNum + ' Writing',
+            desc: 'Soal resmi Academic Writing Task 1 & Task 2 berstandar Cambridge 15 dengan viewer PDF bebas toolbar dan countdown timer 60 menit.',
+            isReady: true,
+            statusLabel: 'Tasks 1 & 2 Ready'
+          };
         } else {
           return {
             title: 'IELTS Writing Practice ' + String(batchNum).padStart(2, '0'),
@@ -140,6 +164,14 @@
           return {
             title: 'Cambridge IELTS 14 Test ' + testNum + ' Speaking',
             desc: 'Kumpulan pertanyaan Speaking Cambridge 14 Test ' + testNum + ' (Parts 1, 2, dan 3) dengan viewer PDF bebas toolbar.',
+            isReady: true,
+            statusLabel: 'Cue Cards Ready'
+          };
+        } else if (batchNum >= 9 && batchNum <= 12) {
+          const testNum = batchNum - 8;
+          return {
+            title: 'Cambridge IELTS 15 Test ' + testNum + ' Speaking',
+            desc: 'Kumpulan pertanyaan Speaking Cambridge 15 Test ' + testNum + ' (Parts 1, 2, dan 3) dengan viewer PDF bebas toolbar.',
             isReady: true,
             statusLabel: 'Cue Cards Ready'
           };

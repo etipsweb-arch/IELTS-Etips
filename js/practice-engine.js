@@ -760,7 +760,9 @@
     }
 
     const batch = window.IeltsPracticeConfig ? window.IeltsPracticeConfig.getBatch(batchId) : null;
-    const pdfUrl = (batch && batch.writingPdfUrl) ? batch.writingPdfUrl : 'assets/data/writing/batch ' + batchId + '/batch ' + batchId + '.pdf';
+    const num = parseInt(batchId, 10);
+    const defaultFolder = (num >= 10 && num <= 12) ? ('batch 0' + num) : ('batch ' + batchId);
+    const pdfUrl = (batch && batch.writingPdfUrl) ? batch.writingPdfUrl : 'assets/data/writing/' + defaultFolder + '/' + defaultFolder + '.pdf';
 
     if (writingIframe && pdfUrl) {
       const cleanUrl = pdfUrl + (pdfUrl.indexOf('#') === -1 ? '#toolbar=0&navpanes=0&scrollbar=1&view=FitH' : '');
@@ -779,7 +781,9 @@
     }
 
     const batch = window.IeltsPracticeConfig ? window.IeltsPracticeConfig.getBatch(batchId) : null;
-    const pdfUrl = (batch && batch.speakingPdfUrl) ? batch.speakingPdfUrl : 'assets/data/speaking/batch ' + batchId + '/batch ' + batchId + '.pdf';
+    const num = parseInt(batchId, 10);
+    const defaultFolder = (num >= 10 && num <= 12) ? ('batch 0' + num) : ('batch ' + batchId);
+    const pdfUrl = (batch && batch.speakingPdfUrl) ? batch.speakingPdfUrl : 'assets/data/speaking/' + defaultFolder + '/' + defaultFolder + '.pdf';
 
     if (speakingIframe && pdfUrl) {
       const cleanUrl = pdfUrl + (pdfUrl.indexOf('#') === -1 ? '#toolbar=0&navpanes=0&scrollbar=1&view=FitH' : '');
